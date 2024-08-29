@@ -1,4 +1,4 @@
-# jdm-app
+# rugby-live-reporting-app
  Application to declare the events of a rugby match (scores, substitutions, injuries, etc.)
 
 ## TO DO
