@@ -4,8 +4,13 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import RNPickerSelect from "react-native-picker-select";
+import { HomeScreenProps } from "@/types/NavigationType";
+import useApplicationStore from "@/stores/ApplicationStore";
 
-export default function Home() {
+export default function Home({navigation}: HomeScreenProps) {
+  // const teamHome = useApplicationStore((state) => state.teamHome);
+  // const teamVisitor = useApplicationStore((state) => state.teamVisitor);
+  const appStore = useApplicationStore();
   const placeholder = {
     value: null,
     color: Colors.light.text,
@@ -29,18 +34,18 @@ export default function Home() {
         <ThemedText>Équipes</ThemedText>
         <RNPickerSelect
           placeholder={{ ...placeholder, label: "Domicile" }}
-          onValueChange={(value) => console.log(value)}
+          onValueChange={(value) => appStore.setTeamHome(value)}
           items={options}
           style={customPickerStyles}
         />
         <RNPickerSelect
           placeholder={{ ...placeholder, label: "Visiteur" }}
-          onValueChange={(value) => console.log(value)}
+          onValueChange={(value) => appStore.setTeamVisitor(value)}
           items={options}
           style={customPickerStyles}
         />
-        <TouchableOpacity style={styles.button} activeOpacity={0.9}>
-          <Text style={styles.buttonText}>Test</Text>
+        <TouchableOpacity style={styles.button} activeOpacity={0.9} onPress={() => navigation.navigate('GameOverview')}>
+          <Text style={styles.buttonText}>Valider</Text>
         </TouchableOpacity>
       </View>
       {/* <ThemedView style={styles.titleContainer}>
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
+    height: "100%",
     width: "100%",
     bottom: 0,
     left: 0,
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#002A61",
     padding: 10,
-    borderRadius: 8
+    // borderRadius: 8
   },
   buttonText: {
     color: "#FFFFFF",
@@ -118,7 +123,7 @@ const customPickerStyles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: Colors.light.tint,
-    borderRadius: 8,
+    // borderRadius: 8,
     color: Colors.light.text,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
@@ -128,7 +133,7 @@ const customPickerStyles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: "blue",
-    borderRadius: 8,
+    // borderRadius: 8,
     color: "black",
     paddingRight: 30, // to ensure the text is never behind the icon
   },
