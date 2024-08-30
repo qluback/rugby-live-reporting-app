@@ -25,17 +25,17 @@ export default function App() {
       <Stack.Screen
         name="Home"
         component={Home}
-        options={{ title: "Jour de match" }}
+        options={{ title: "Jour de match", headerTintColor: "#002A61" }}
       />
       <Stack.Screen
         name="GameOverview"
         component={GameOverview}
-        options={{ title: "Rapport de match", headerBackTitle: "Retour" }}
+        options={{ title: "Rapport de match", headerBackTitle: "Retour", headerTintColor: "#002A61" }}
       />
       <Stack.Screen
         name="AddHighlight"
         component={AddHighlight}
-        options={{ title: "Ajouter un temps-fort", headerBackTitle: "Retour" }}
+        options={{ title: "Ajouter un temps-fort", headerBackTitle: "Retour", headerTintColor: "#002A61" }}
       />
     </Stack.Navigator>
   );

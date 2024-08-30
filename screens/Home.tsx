@@ -14,6 +14,9 @@ import RNPickerSelect from "react-native-picker-select";
 import { HomeScreenProps } from "@/types/NavigationType";
 import useApplicationStore from "@/stores/ApplicationStore";
 import { ThemedView } from "@/components/ThemedView";
+import { useState } from "react";
+import { customPickerStyles } from "@/styles/customPickerStyles";
+import { commonStyles } from "@/styles/commonStyles";
 
 export default function Home({ navigation }: HomeScreenProps) {
   // const teamHome = useApplicationStore((state) => state.teamHome);
@@ -28,6 +31,21 @@ export default function Home({ navigation }: HomeScreenProps) {
     { label: "Juvisy", value: "Juvisy" },
     { label: "Lognes", value: "Lognes" },
   ];
+  const [errors, setErrors] = useState({
+    errorTeamHome: false,
+    errorTeamVisitor: false,
+  });
+
+  function handleSubmit() {
+    setErrors({
+      errorTeamHome: appStore.teamHome === "",
+      errorTeamVisitor: appStore.teamVisitor === "",
+    });
+    if (appStore.teamHome === "" || appStore.teamVisitor === "") return;
+
+    navigation.navigate("GameOverview");
+  }
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: Colors.light.tint, dark: "#1D3D47" }}
@@ -41,24 +59,40 @@ export default function Home({ navigation }: HomeScreenProps) {
       <ThemedView style={styles.formContainer}>
         <ThemedText style={styles.formTitle}>Équipes</ThemedText>
         <ThemedView style={styles.form}>
-          <RNPickerSelect
-            placeholder={{ ...placeholder, label: "Domicile" }}
-            onValueChange={(value) => appStore.setTeamHome(value)}
-            items={options}
-            style={customPickerStyles}
-          />
-          <RNPickerSelect
-            placeholder={{ ...placeholder, label: "Visiteur" }}
-            onValueChange={(value) => appStore.setTeamVisitor(value)}
-            items={options}
-            style={customPickerStyles}
-          />
+          <ThemedView>
+            <RNPickerSelect
+              placeholder={{ ...placeholder, label: "Domicile" }}
+              onValueChange={(value) => appStore.setTeamHome(value)}
+              items={options}
+              style={customPickerStyles}
+              value={appStore.teamHome !== "" ? appStore.teamHome : null}
+            />
+            {errors.errorTeamHome && (
+              <ThemedText style={commonStyles.errorMessage}>
+                Veuillez renseigner l'équipe à domicile
+              </ThemedText>
+            )}
+          </ThemedView>
+          <ThemedView>
+            <RNPickerSelect
+              placeholder={{ ...placeholder, label: "Visiteur" }}
+              onValueChange={(value) => appStore.setTeamVisitor(value)}
+              items={options}
+              style={customPickerStyles}
+              value={appStore.teamVisitor !== "" ? appStore.teamVisitor : null}
+            />
+            {errors.errorTeamVisitor && (
+              <ThemedText style={commonStyles.errorMessage}>
+                Veuillez renseigner l'équipe visiteuse
+              </ThemedText>
+            )}
+          </ThemedView>
           <TouchableOpacity
-            style={styles.button}
+            style={commonStyles.button}
             activeOpacity={0.9}
-            onPress={() => navigation.navigate("GameOverview")}
+            onPress={handleSubmit}
           >
-            <Text style={styles.buttonText}>Valider</Text>
+            <Text style={commonStyles.buttonText}>Valider</Text>
           </TouchableOpacity>
         </ThemedView>
       </ThemedView>
@@ -74,18 +108,8 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  button: {
-    backgroundColor: "#002A61",
-    padding: 16,
-    // borderRadius: 8
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    textAlign: "center",
-    fontWeight: "bold"
-  },
   formContainer: {
-    gap: 16
+    gap: 16,
   },
   formTitle: {
     fontSize: 18,
@@ -93,28 +117,5 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 16,
-  },
-});
-
-const customPickerStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: Colors.light.tint,
-    // borderRadius: 8,
-    color: Colors.light.text,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 14,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "blue",
-    // borderRadius: 8,
-    color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });
