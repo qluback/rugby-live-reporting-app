@@ -1,4 +1,11 @@
-import { Image, StyleSheet, TouchableOpacity, TouchableHighlight, Text, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableHighlight,
+  Text,
+  View,
+} from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -7,7 +14,7 @@ import RNPickerSelect from "react-native-picker-select";
 import { HomeScreenProps } from "@/types/NavigationType";
 import useApplicationStore from "@/stores/ApplicationStore";
 
-export default function Home({navigation}: HomeScreenProps) {
+export default function Home({ navigation }: HomeScreenProps) {
   // const teamHome = useApplicationStore((state) => state.teamHome);
   // const teamVisitor = useApplicationStore((state) => state.teamVisitor);
   const appStore = useApplicationStore();
@@ -30,23 +37,29 @@ export default function Home({navigation}: HomeScreenProps) {
         />
       }
     >
-      <View>
-        <ThemedText>Équipes</ThemedText>
-        <RNPickerSelect
-          placeholder={{ ...placeholder, label: "Domicile" }}
-          onValueChange={(value) => appStore.setTeamHome(value)}
-          items={options}
-          style={customPickerStyles}
-        />
-        <RNPickerSelect
-          placeholder={{ ...placeholder, label: "Visiteur" }}
-          onValueChange={(value) => appStore.setTeamVisitor(value)}
-          items={options}
-          style={customPickerStyles}
-        />
-        <TouchableOpacity style={styles.button} activeOpacity={0.9} onPress={() => navigation.navigate('GameOverview')}>
-          <Text style={styles.buttonText}>Valider</Text>
-        </TouchableOpacity>
+      <View style={styles.formContainer}>
+        <ThemedText style={styles.formTitle}>Équipes</ThemedText>
+        <View style={styles.form}>
+          <RNPickerSelect
+            placeholder={{ ...placeholder, label: "Domicile" }}
+            onValueChange={(value) => appStore.setTeamHome(value)}
+            items={options}
+            style={customPickerStyles}
+          />
+          <RNPickerSelect
+            placeholder={{ ...placeholder, label: "Visiteur" }}
+            onValueChange={(value) => appStore.setTeamVisitor(value)}
+            items={options}
+            style={customPickerStyles}
+          />
+          <TouchableOpacity
+            style={styles.button}
+            activeOpacity={0.9}
+            onPress={() => navigation.navigate("GameOverview")}
+          >
+            <Text style={styles.buttonText}>Valider</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       {/* <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
@@ -107,13 +120,24 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#002A61",
-    padding: 10,
+    padding: 16,
     // borderRadius: 8
   },
   buttonText: {
     color: "#FFFFFF",
-    textAlign: "center"
-  }
+    textAlign: "center",
+    fontWeight: "bold"
+  },
+  formContainer: {
+    gap: 16
+  },
+  formTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  form: {
+    gap: 16,
+  },
 });
 
 const customPickerStyles = StyleSheet.create({
