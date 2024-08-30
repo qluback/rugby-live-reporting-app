@@ -1,3 +1,4 @@
+import AddHighlight from "@/screens/AddHighlight";
 import GameOverview from "@/screens/GameOverview";
 import Home from "@/screens/Home";
 import { RootStackParamList } from "@/types/NavigationType";
@@ -6,7 +7,7 @@ import { useState } from "react";
 
 export default function App() {
   const [screen, setScreen] = useState("game-overview");
-  
+
   function handleSubmitTeams() {}
 
   // switch (screen) {
@@ -20,10 +21,22 @@ export default function App() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
 
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="GameOverview" component={GameOverview} />
-      </Stack.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{ title: "Jour de match" }}
+      />
+      <Stack.Screen
+        name="GameOverview"
+        component={GameOverview}
+        options={{ title: "Rapport de match", headerBackTitle: "Retour" }}
+      />
+      <Stack.Screen
+        name="AddHighlight"
+        component={AddHighlight}
+        options={{ title: "Ajouter un temps-fort", headerBackTitle: "Retour" }}
+      />
+    </Stack.Navigator>
   );
-
 }

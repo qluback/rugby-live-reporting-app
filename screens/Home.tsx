@@ -13,6 +13,7 @@ import { Colors } from "@/constants/Colors";
 import RNPickerSelect from "react-native-picker-select";
 import { HomeScreenProps } from "@/types/NavigationType";
 import useApplicationStore from "@/stores/ApplicationStore";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function Home({ navigation }: HomeScreenProps) {
   // const teamHome = useApplicationStore((state) => state.teamHome);
@@ -23,9 +24,9 @@ export default function Home({ navigation }: HomeScreenProps) {
     color: Colors.light.text,
   };
   const options = [
-    { label: "Athis-Mons", value: "athis-mons" },
-    { label: "Juvisy", value: "juvisy" },
-    { label: "Lognes", value: "lognes" },
+    { label: "Athis-Mons", value: "Athis-Mons" },
+    { label: "Juvisy", value: "Juvisy" },
+    { label: "Lognes", value: "Lognes" },
   ];
   return (
     <ParallaxScrollView
@@ -33,13 +34,13 @@ export default function Home({ navigation }: HomeScreenProps) {
       headerImage={
         <Image
           source={require("@/assets/images/banner-ffr.png")}
-          style={styles.reactLogo}
+          style={styles.logo}
         />
       }
     >
-      <View style={styles.formContainer}>
+      <ThemedView style={styles.formContainer}>
         <ThemedText style={styles.formTitle}>Équipes</ThemedText>
-        <View style={styles.form}>
+        <ThemedView style={styles.form}>
           <RNPickerSelect
             placeholder={{ ...placeholder, label: "Domicile" }}
             onValueChange={(value) => appStore.setTeamHome(value)}
@@ -59,59 +60,14 @@ export default function Home({ navigation }: HomeScreenProps) {
           >
             <Text style={styles.buttonText}>Valider</Text>
           </TouchableOpacity>
-        </View>
-      </View>
-      {/* <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        </ThemedView>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">
-            app/(tabs)/index.tsxssb
-          </ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: "cmd + d", android: "cmd + m" })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{" "}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView> */}
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
+  logo: {
     height: "100%",
     width: "100%",
     bottom: 0,
