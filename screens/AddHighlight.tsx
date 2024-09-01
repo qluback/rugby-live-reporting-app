@@ -1,70 +1,83 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import useApplicationStore from "@/stores/ApplicationStore";
 import { commonStyles } from "@/styles/commonStyles";
 import { customPickerStyles } from "@/styles/customPickerStyles";
 import { AddHighlightScreenProps } from "@/types/NavigationType";
 import { useMemo, useState } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import RadioGroup from "react-native-radio-buttons-group";
 
 export default function AddHighlight({ navigation }: AddHighlightScreenProps) {
+  const GAME_DURATION_MINUTES = 80;
   const appStore = useApplicationStore();
   const [selectedId, setSelectedId] = useState<string | undefined>();
+  const [highlightMinute, setHighlightMinute] = useState<number|undefined>();
+  const [highlightName, setHighlightName] = useState<string|undefined>();
 
-  const teamOptions = [
-    { label: appStore.teamHome, value: appStore.teamHome },
-    { label: appStore.teamVisitor, value: appStore.teamVisitor },
-  ];
   const radioButtons = useMemo(
     () => [
       {
         id: "1", // acts as primary key, should be unique and non-empty string
         label: appStore.teamHome,
-        value: appStore.teamHome,
+        value: TeamSideEnum.HOME,
         color: "#002A61",
-        labelStyle: {color: "#002A61"},
+        labelStyle: { color: "#002A61" },
       },
       {
         id: "2",
         label: appStore.teamVisitor,
-        value: appStore.teamVisitor,
+        value: TeamSideEnum.VISITOR,
         color: "#002A61",
-        labelStyle: {color: "#002A61"},
+        labelStyle: { color: "#002A61" },
       },
     ],
     []
   );
   const highlightTypeOptions = [
-    { label: "Try", value: "Try" },
-    { label: "Converted try", value: "Converted try" },
-    { label: "Penalty try", value: "Penalty try" },
-    { label: "Penalty kick", value: "Penalty kick" },
-    { label: "Drop goal", value: "Drop goal" },
+    { label: "Essai", value: "Essai" },
+    { label: "Essai transformé", value: "Essai transformé" },
+    { label: "Essai de pénalité", value: "Essai de pénalité" },
+    { label: "Pénalité", value: "Pénalité" },
+    { label: "Drop", value: "Drop" },
   ];
 
+  function buildHighlightMinuteOptions() {
+    const options = [];
+    for (let index = 1; index <= GAME_DURATION_MINUTES; index++) {
+      options.push({label: index.toString(), value: index.toString()});
+    }
+
+    return options;
+  }
+
   function handleSubmit() {
+    const team = radioButtons.find((radioButton) => radioButton.id === selectedId);
+    if (highlightName === undefined || team === undefined || highlightMinute === undefined) return;
+
+    appStore.updateHighlights({name: highlightName, minute: highlightMinute}, team.value);
     navigation.navigate("GameOverview");
   }
 
   return (
     <ThemedView style={styles.formContainer}>
       <RadioGroup
-      containerStyle={{flexDirection: "row"}}
+        layout="row"
         radioButtons={radioButtons}
         onPress={setSelectedId}
         selectedId={selectedId}
       />
-      {/* <RNPickerSelect
-        placeholder={{ value: null, label: "Nom de l'équipe" }}
-        onValueChange={(value) => console.log(value)}
-        items={teamOptions}
+      <RNPickerSelect
+        placeholder={{ value: null, label: "Minute" }}
+        onValueChange={(value) => setHighlightMinute(value)}
+        items={buildHighlightMinuteOptions()}
         style={customPickerStyles}
-      /> */}
+      />
       <RNPickerSelect
         placeholder={{ value: null, label: "Type de temps-fort" }}
-        onValueChange={(value) => console.log(value)}
+        onValueChange={(value) => setHighlightName(value)}
         items={highlightTypeOptions}
         style={customPickerStyles}
       />

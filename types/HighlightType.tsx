@@ -1,3 +1,4 @@
-export type HightlightType = {
+export type HighlightType = {
   name: string;
+  minute: number;
 }

@@ -1,11 +1,26 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import useApplicationStore from "@/stores/ApplicationStore";
+import { HighlightType } from "@/types/HighlightType";
 import { GameOverviewScreenProps } from "@/types/NavigationType";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function GameOverview({ navigation }: GameOverviewScreenProps) {
   const appStore = useApplicationStore();
+
+  function renderHighlightList(highlights: HighlightType[]) {
+    return (
+      <ThemedView style={styles.highlightsList}>
+        {highlights.map((highlight: HighlightType, index) => (
+          <ThemedView key={"home" + index} style={styles.highlightItem}>
+            <ThemedText>{highlight.name}</ThemedText>
+            <ThemedText>{highlight.minute}'</ThemedText>
+          </ThemedView>
+        ))}
+      </ThemedView>
+    );
+  }
+
   return (
     <ThemedView style={styles.main}>
       <ThemedView style={styles.header}>
@@ -15,9 +30,9 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         <ThemedText style={styles.headerScores}>0 - 0</ThemedText>
       </ThemedView>
       <ThemedView style={styles.highlightsContainer}>
-        <ThemedText>ABCDEF</ThemedText>
+        {renderHighlightList(appStore.highlightsHome)}
         <View style={styles.verticalLine}></View>
-        <ThemedText>ABCDEF</ThemedText>
+        {renderHighlightList(appStore.highlightsVisitor)}
       </ThemedView>
       <TouchableOpacity
         style={styles.button}
@@ -32,7 +47,7 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
 
 const styles = StyleSheet.create({
   main: {
-    height: "100%"
+    height: "100%",
   },
   header: {
     backgroundColor: "#002A61",
@@ -53,8 +68,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     flex: 1,
-    padding: 16,
     // height: "100%"
+    paddingVertical: 16
+  },
+  highlightsList: {
+    width: "50%",
+  },
+  highlightItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 16
   },
   verticalLine: {
     height: "100%",
@@ -65,12 +88,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#002A61",
     padding: 16,
     margin: 16,
-    marginBottom: 32
+    marginBottom: 32,
     // borderRadius: 8
   },
   buttonText: {
     color: "#FFFFFF",
     textAlign: "center",
-    fontWeight: "bold"
+    fontWeight: "bold",
+  },
+  textAlignRight: {
+    textAlign: "right",
   },
 });
