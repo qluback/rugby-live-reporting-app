@@ -1,24 +1,13 @@
 import AddHighlight from "@/screens/AddHighlight";
 import GameOverview from "@/screens/GameOverview";
 import Home from "@/screens/Home";
-import { RootStackParamList } from "@/types/NavigationType";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StackParamList } from "@/types/NavigationType";
 import { useState } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import "../assets/js/gesture-handler";
 
 export default function App() {
-  const [screen, setScreen] = useState("game-overview");
-
-  function handleSubmitTeams() {}
-
-  // switch (screen) {
-  //   case "game-overview":
-  //     return <GameOverview />;
-  //   case "home":
-  //   default:
-  //     return <Home />;
-  // }
-
-  const Stack = createNativeStackNavigator<RootStackParamList>();
+  const Stack = createStackNavigator<StackParamList>();
 
   return (
     <Stack.Navigator>
@@ -30,12 +19,20 @@ export default function App() {
       <Stack.Screen
         name="GameOverview"
         component={GameOverview}
-        options={{ title: "Rapport de match", headerBackTitle: "Retour", headerTintColor: "#002A61" }}
+        options={{
+          title: "Rapport de match",
+          headerBackTitle: "Retour",
+          headerTintColor: "#002A61",
+        }}
       />
       <Stack.Screen
         name="AddHighlight"
         component={AddHighlight}
-        options={{ title: "Ajouter un temps-fort", headerBackTitle: "Retour", headerTintColor: "#002A61" }}
+        options={{
+          title: "Ajouter un temps-fort",
+          headerBackTitle: "Retour",
+          headerTintColor: "#002A61",
+        }}
       />
     </Stack.Navigator>
   );

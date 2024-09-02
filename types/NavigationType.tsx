@@ -1,11 +1,11 @@
-import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types"
+import { StackScreenProps } from "@react-navigation/stack";
 
-export type RootStackParamList = {
+export type StackParamList = {
   Home: undefined,
   GameOverview: undefined,
   AddHighlight: undefined,
 }
 
-export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
-export type GameOverviewScreenProps = NativeStackScreenProps<RootStackParamList, "GameOverview">;
-export type AddHighlightScreenProps = NativeStackScreenProps<RootStackParamList, "AddHighlight">;
+export type HomeScreenProps = StackScreenProps<StackParamList, "Home">;
+export type GameOverviewScreenProps = StackScreenProps<StackParamList, "GameOverview">;
+export type AddHighlightScreenProps = StackScreenProps<StackParamList, "AddHighlight">;

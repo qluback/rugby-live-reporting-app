@@ -1,4 +1,3 @@
-import { ScoringHighlight } from "@/constants/ScoringHighlights";
 import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import { HighlightType } from "@/types/HighlightType";
 import { create } from "zustand";
