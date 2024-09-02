@@ -9,6 +9,8 @@ import { customPickerStyles } from "@/styles/customPickerStyles";
 import { commonStyles } from "@/styles/commonStyles";
 import { ThemedText } from "../ThemedText";
 import { isDisciplinaryHighlight } from "@/enums/DisciplinaryHighlightEnum";
+import { PlayerHighlights } from "@/constants/PlayerHighlights";
+import { PlayerHighlightType } from "@/types/PlayerHighlightType";
 
 export default function PlayerHighlightForm({
   onSubmitForm,
@@ -91,28 +93,31 @@ export default function PlayerHighlightForm({
   }
 
   function handleSubmit() {
-    // const team = radioButtons.find(
-    //   (radioButton) => radioButton.id === selectedId
-    // );
-    // const scoringHighlight: ScoringHighlightType | undefined =
-    //   highlightId !== undefined ? ScoringHighlights[highlightId] : undefined;
-    // if (
-    //   scoringHighlight === undefined ||
-    //   team === undefined ||
-    //   highlightMinute === undefined
-    // )
-    //   return;
-    // appStore.addHighlight(
-    //   { name: scoringHighlight.label, minute: highlightMinute },
-    //   scoringHighlight.points,
-    //   team.value
-    // );
+    const team = radioButtons.find(
+      (radioButton) => radioButton.id === selectedId
+    );
+    const playerHighlight: PlayerHighlightType | null =
+      highlightId !== undefined ? PlayerHighlights[highlightId] : null;
+    if (
+      playerHighlight === null ||
+      team === undefined ||
+      highlightMinute === undefined
+    )
+      return;
+    appStore.addHighlight(
+      {
+        id: playerHighlight.id,
+        name: playerHighlight.label,
+        minute: highlightMinute,
+      },
+      0,
+      team.value
+    );
     onSubmitForm();
   }
   console.log(highlightId, isDisciplinaryHighlight(highlightId));
   return (
     <ThemedView style={styles.formContainer}>
-      {/* <HighlightTabs /> */}
       <RadioGroup
         layout="row"
         radioButtons={radioButtons}

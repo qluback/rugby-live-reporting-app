@@ -9,6 +9,7 @@ import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import { customPickerStyles } from "@/styles/customPickerStyles";
 import { commonStyles } from "@/styles/commonStyles";
 import { ThemedText } from "../ThemedText";
+import { ScoringHighlightType } from "@/types/ScoringHighlightType";
 
 export default function ScoringHighlightForm({
   onSubmitForm,
@@ -70,23 +71,27 @@ export default function ScoringHighlightForm({
   }
 
   function handleSubmit() {
-    // const team = radioButtons.find(
-    //   (radioButton) => radioButton.id === selectedId
-    // );
-    // const scoringHighlight: ScoringHighlightType | null =
-    //   highlightId !== undefined ? ScoringHighlights[highlightId] : null;
-    // if (
-    //   scoringHighlight === null ||
-    //   team === undefined ||
-    //   highlightMinute === 0
-    // )
-    //   return;
+    const team = radioButtons.find(
+      (radioButton) => radioButton.id === selectedId
+    );
+    const scoringHighlight: ScoringHighlightType | null =
+      highlightId !== undefined ? ScoringHighlights[highlightId] : null;
+    if (
+      scoringHighlight === null ||
+      team === undefined ||
+      highlightMinute === 0
+    )
+      return;
 
-    // appStore.addHighlight(
-    //   { name: scoringHighlight.label, minute: highlightMinute },
-    //   scoringHighlight.points,
-    //   team.value
-    // );
+    appStore.addHighlight(
+      {
+        id: scoringHighlight.id,
+        name: scoringHighlight.label,
+        minute: highlightMinute,
+      },
+      scoringHighlight.points,
+      team.value
+    );
     onSubmitForm();
   }
 
