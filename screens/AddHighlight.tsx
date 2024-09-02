@@ -1,10 +1,12 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { ScoringHighlights } from "@/constants/ScoringHighlights";
 import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import useApplicationStore from "@/stores/ApplicationStore";
 import { commonStyles } from "@/styles/commonStyles";
 import { customPickerStyles } from "@/styles/customPickerStyles";
 import { AddHighlightScreenProps } from "@/types/NavigationType";
+import { ScoringHighlightType } from "@/types/ScoringHighlightType";
 import { useMemo, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
@@ -14,8 +16,8 @@ export default function AddHighlight({ navigation }: AddHighlightScreenProps) {
   const GAME_DURATION_MINUTES = 80;
   const appStore = useApplicationStore();
   const [selectedId, setSelectedId] = useState<string | undefined>();
-  const [highlightMinute, setHighlightMinute] = useState<number|undefined>();
-  const [highlightName, setHighlightName] = useState<string|undefined>();
+  const [highlightMinute, setHighlightMinute] = useState<number | undefined>();
+  const [highlightId, setHighlightId] = useState<string | undefined>();
 
   const radioButtons = useMemo(
     () => [
@@ -37,27 +39,52 @@ export default function AddHighlight({ navigation }: AddHighlightScreenProps) {
     []
   );
   const highlightTypeOptions = [
-    { label: "Essai", value: "Essai" },
-    { label: "Essai transformé", value: "Essai transformé" },
-    { label: "Essai de pénalité", value: "Essai de pénalité" },
-    { label: "Pénalité", value: "Pénalité" },
-    { label: "Drop", value: "Drop" },
+    { label: ScoringHighlights.try.label, value: ScoringHighlights.try.id },
+    {
+      label: ScoringHighlights.convertedTry.label,
+      value: ScoringHighlights.convertedTry.id,
+    },
+    {
+      label: ScoringHighlights.penaltyTry.label,
+      value: ScoringHighlights.penaltyTry.id,
+    },
+    {
+      label: ScoringHighlights.penalty.label,
+      value: ScoringHighlights.penalty.id,
+    },
+    {
+      label: ScoringHighlights.dropGoal.label,
+      value: ScoringHighlights.dropGoal.id,
+    },
   ];
 
   function buildHighlightMinuteOptions() {
     const options = [];
     for (let index = 1; index <= GAME_DURATION_MINUTES; index++) {
-      options.push({label: index.toString(), value: index.toString()});
+      options.push({ label: index.toString(), value: index.toString() });
     }
 
     return options;
   }
 
   function handleSubmit() {
-    const team = radioButtons.find((radioButton) => radioButton.id === selectedId);
-    if (highlightName === undefined || team === undefined || highlightMinute === undefined) return;
+    const team = radioButtons.find(
+      (radioButton) => radioButton.id === selectedId
+    );
+    const scoringHighlight: ScoringHighlightType | undefined =
+      highlightId !== undefined ? ScoringHighlights[highlightId] : undefined;
+    if (
+      scoringHighlight === undefined ||
+      team === undefined ||
+      highlightMinute === undefined
+    )
+      return;
 
-    appStore.updateHighlights({name: highlightName, minute: highlightMinute}, team.value);
+    appStore.addHighlight(
+      { name: scoringHighlight.label, minute: highlightMinute },
+      scoringHighlight.points,
+      team.value
+    );
     navigation.navigate("GameOverview");
   }
 
@@ -77,7 +104,7 @@ export default function AddHighlight({ navigation }: AddHighlightScreenProps) {
       />
       <RNPickerSelect
         placeholder={{ value: null, label: "Type de temps-fort" }}
-        onValueChange={(value) => setHighlightName(value)}
+        onValueChange={(value) => setHighlightId(value)}
         items={highlightTypeOptions}
         style={customPickerStyles}
       />

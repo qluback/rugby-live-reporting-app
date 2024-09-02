@@ -27,7 +27,7 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         <ThemedText style={styles.headerTeams}>
           {appStore.teamHome} vs {appStore.teamVisitor}
         </ThemedText>
-        <ThemedText style={styles.headerScores}>0 - 0</ThemedText>
+        <ThemedText style={styles.headerScores}>{appStore.scoreHome} - {appStore.scoreVisitor}</ThemedText>
       </ThemedView>
       <ThemedView style={styles.highlightsContainer}>
         {renderHighlightList(appStore.highlightsHome)}
