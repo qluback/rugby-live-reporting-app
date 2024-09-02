@@ -1,5 +1,8 @@
 # rugby-live-reporting-app
- Application to declare the events of a rugby match (scores, substitutions, injuries, etc.)
+Application to declare the events of a rugby match (scores, substitutions, injuries, etc.)
+
+## Stack
+React Native, Typescript
 
 ## TO DO
 - Database
