@@ -2,7 +2,6 @@ import AddHighlight from "@/screens/AddHighlight";
 import GameOverview from "@/screens/GameOverview";
 import Home from "@/screens/Home";
 import { StackParamList } from "@/types/NavigationType";
-import { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import "../assets/js/gesture-handler";
 

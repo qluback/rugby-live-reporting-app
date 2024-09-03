@@ -9,7 +9,6 @@ import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import { customPickerStyles } from "@/styles/customPickerStyles";
 import { commonStyles } from "@/styles/commonStyles";
 import { ThemedText } from "../ThemedText";
-import { ScoringHighlightType } from "@/types/ScoringHighlightType";
 
 export default function ScoringHighlightForm({
   onSubmitForm,
@@ -39,7 +38,7 @@ export default function ScoringHighlightForm({
         labelStyle: { color: "#002A61" },
       },
     ],
-    []
+    [appStore.teamHome, appStore.teamVisitor]
   );
   const highlightTypeOptions = [
     { label: ScoringHighlights.try.label, value: ScoringHighlights.try.id },
@@ -74,7 +73,7 @@ export default function ScoringHighlightForm({
     const team = radioButtons.find(
       (radioButton) => radioButton.id === selectedId
     );
-    const scoringHighlight: ScoringHighlightType | null =
+    const scoringHighlight: {id: string, label: string, points: number} | null =
       highlightId !== undefined ? ScoringHighlights[highlightId] : null;
     if (
       scoringHighlight === null ||
@@ -83,13 +82,13 @@ export default function ScoringHighlightForm({
     )
       return;
 
-    appStore.addHighlight(
+    appStore.addScoringHighlight(
       {
         id: scoringHighlight.id,
-        name: scoringHighlight.label,
+        label: scoringHighlight.label,
         minute: highlightMinute,
+        points: scoringHighlight.points
       },
-      scoringHighlight.points,
       team.value
     );
     onSubmitForm();

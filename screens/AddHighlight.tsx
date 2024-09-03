@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ScoringHighlightForm from "@/components/form/ScoringHighlightForm";
 import PlayerHighlightForm from "@/components/form/PlayerHighlightForm";
@@ -33,11 +32,3 @@ export default function AddHighlight({ navigation }: AddHighlightScreenProps) {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  formContainer: {
-    // height: "100%",
-    padding: 16,
-    gap: 16,
-  },
-});

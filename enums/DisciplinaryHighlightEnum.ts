@@ -3,6 +3,6 @@ export enum DisciplinaryHighlightEnum {
   RED_CARD = "redCard",
 }
 
-export function isDisciplinaryHighlight(value: string): value is DisciplinaryHighlightEnum {
+export function isDisciplinaryHighlightId(value: string): value is DisciplinaryHighlightEnum {
   return Object.values(DisciplinaryHighlightEnum).includes(value as DisciplinaryHighlightEnum);
 }

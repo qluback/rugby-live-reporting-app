@@ -1,5 +1,8 @@
 import { TeamSideEnum } from "@/enums/TeamSideEnum";
-import { HighlightType } from "@/types/HighlightType";
+import { DisciplinaryHighlightType } from "@/types/highlight/DisciplinaryHighlightType";
+import { HighlightType } from "@/types/highlight/HighlightType";
+import { ScoringHighlightType } from "@/types/highlight/ScoringHighlightType";
+import { SubstitutionHighlightType } from "@/types/highlight/SubstitutionHighlightType";
 import { create } from "zustand";
 
 type Store = {
@@ -11,7 +14,8 @@ type Store = {
   scoreVisitor: number,
   setTeamHome: (name: string) => void;
   setTeamVisitor: (name: string) => void;
-  addHighlight: (highlight: HighlightType, points: number, team: string) => void;
+  addScoringHighlight: (highlight: ScoringHighlightType, team: string) => void;
+  addPlayerHighlight: (highlight: DisciplinaryHighlightType|SubstitutionHighlightType, team: string) => void;
 };
 
 const useApplicationStore = create<Store>((set) => ({
@@ -23,18 +27,35 @@ const useApplicationStore = create<Store>((set) => ({
   highlightsVisitor: [],
   setTeamHome: (name: string) => set({ teamHome: name }),
   setTeamVisitor: (name: string) => set({ teamVisitor: name }),
-  addHighlight: (highlight: HighlightType, points: number, teamSide: string) =>
+  addScoringHighlight: (highlight: ScoringHighlightType, teamSide: string) =>
     set((state) => {
       let updatedHighlights: HighlightType[] = [];
       switch (teamSide) {
         case TeamSideEnum.HOME:
           updatedHighlights = [...state.highlightsHome, highlight];
 
-          return { highlightsHome: updatedHighlights.sort(compare), scoreHome: state.scoreHome + points };
+          return { highlightsHome: updatedHighlights.sort(compare), scoreHome: state.scoreHome + highlight.points };
         case TeamSideEnum.VISITOR:
           updatedHighlights = [...state.highlightsVisitor, highlight];
 
-          return { highlightsVisitor: updatedHighlights.sort(compare), scoreVisitor: state.scoreVisitor + points};
+          return { highlightsVisitor: updatedHighlights.sort(compare), scoreVisitor: state.scoreVisitor + highlight.points};
+        default:
+          return state;
+      }
+    }),
+  addPlayerHighlight: (highlight: DisciplinaryHighlightType|SubstitutionHighlightType, teamSide: string) =>
+    set((state) => {
+      console.log(highlight);
+      let updatedHighlights: HighlightType[] = [];
+      switch (teamSide) {
+        case TeamSideEnum.HOME:
+          updatedHighlights = [...state.highlightsHome, highlight];
+
+          return { highlightsHome: updatedHighlights.sort(compare) };
+        case TeamSideEnum.VISITOR:
+          updatedHighlights = [...state.highlightsVisitor, highlight];
+
+          return { highlightsVisitor: updatedHighlights.sort(compare)};
         default:
           return state;
       }

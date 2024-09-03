@@ -8,9 +8,13 @@ import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import { customPickerStyles } from "@/styles/customPickerStyles";
 import { commonStyles } from "@/styles/commonStyles";
 import { ThemedText } from "../ThemedText";
-import { isDisciplinaryHighlight } from "@/enums/DisciplinaryHighlightEnum";
+import { isDisciplinaryHighlightId } from "@/enums/DisciplinaryHighlightEnum";
 import { PlayerHighlights } from "@/constants/PlayerHighlights";
-import { PlayerHighlightType } from "@/types/PlayerHighlightType";
+
+interface OptionsProps {
+  label: string;
+  value: string;
+}
 
 export default function PlayerHighlightForm({
   onSubmitForm,
@@ -23,13 +27,11 @@ export default function PlayerHighlightForm({
   const [selectedId, setSelectedId] = useState<string>("");
   const [highlightMinute, setHighlightMinute] = useState<number>(0);
   const [highlightId, setHighlightId] = useState<string>("");
-  const [playerInvolved, setPlayerInvolved] = useState<number | undefined>();
-  const [playerSubstituted, setPlayerSubstituted] = useState<
-    number | undefined
-  >();
-  const [playerSubstitute, setPlayerSubstitute] = useState<
-    number | undefined
-  >();
+  const [playerInvolved, setPlayerInvolved] = useState<number | null>(null);
+  const [playerSubstituted, setPlayerSubstituted] = useState<number | null>(
+    null
+  );
+  const [playerSubstitute, setPlayerSubstitute] = useState<number | null>(null);
 
   const radioButtons = useMemo(
     () => [
@@ -48,13 +50,10 @@ export default function PlayerHighlightForm({
         labelStyle: { color: "#002A61" },
       },
     ],
-    []
+    [appStore.teamHome, appStore.teamVisitor]
   );
 
-  function buildHighlightTypeOptions(): Array<{
-    label: string;
-    value: string;
-  }> {
+  function buildHighlightTypeOptions(): OptionsProps[] {
     return [
       {
         label: "Carton jaune",
@@ -71,10 +70,7 @@ export default function PlayerHighlightForm({
     ];
   }
 
-  function buildHighlightMinuteOptions(): Array<{
-    label: string;
-    value: string;
-  }> {
+  function buildHighlightMinuteOptions(): OptionsProps[] {
     const options = [];
     for (let index = 1; index <= GAME_DURATION_MINUTES; index++) {
       options.push({ label: index.toString(), value: index.toString() });
@@ -83,7 +79,7 @@ export default function PlayerHighlightForm({
     return options;
   }
 
-  function buildPlayersOptions(): Array<{ label: string; value: string }> {
+  function buildPlayersOptions(): OptionsProps[] {
     const options = [];
     for (let index = 1; index <= NUMBER_PLAYERS; index++) {
       options.push({ label: index.toString(), value: index.toString() });
@@ -96,7 +92,7 @@ export default function PlayerHighlightForm({
     const team = radioButtons.find(
       (radioButton) => radioButton.id === selectedId
     );
-    const playerHighlight: PlayerHighlightType | null =
+    const playerHighlight: { id: string; label: string } | null =
       highlightId !== undefined ? PlayerHighlights[highlightId] : null;
     if (
       playerHighlight === null ||
@@ -104,18 +100,37 @@ export default function PlayerHighlightForm({
       highlightMinute === undefined
     )
       return;
-    appStore.addHighlight(
-      {
-        id: playerHighlight.id,
-        name: playerHighlight.label,
-        minute: highlightMinute,
-      },
-      0,
-      team.value
-    );
+
+    if (isDisciplinaryHighlightId(highlightId)) {
+      if (playerInvolved === null) return;
+
+      appStore.addPlayerHighlight(
+        {
+          id: playerHighlight.id,
+          label: playerHighlight.label,
+          player: playerInvolved,
+          minute: highlightMinute,
+        },
+        team.value
+      );
+    } else {
+      if (playerSubstituted === null || playerSubstitute === null) return;
+
+      appStore.addPlayerHighlight(
+        {
+          id: playerHighlight.id,
+          label: playerHighlight.label,
+          playerSubstituted: playerSubstituted,
+          playerSubstitute: playerSubstitute,
+          minute: highlightMinute,
+        },
+        team.value
+      );
+    }
+
     onSubmitForm();
   }
-  console.log(highlightId, isDisciplinaryHighlight(highlightId));
+  console.log(highlightId, isDisciplinaryHighlightId(highlightId));
   return (
     <ThemedView style={styles.formContainer}>
       <RadioGroup
@@ -148,13 +163,13 @@ export default function PlayerHighlightForm({
         <>
           <RNPickerSelect
             placeholder={{ value: null, label: "Joueur remplacé" }}
-            onValueChange={(value) => setPlayerInvolved(value)}
+            onValueChange={(value) => setPlayerSubstituted(value)}
             items={buildPlayersOptions()}
             style={customPickerStyles}
           />
           <RNPickerSelect
             placeholder={{ value: null, label: "Joueur remplaçant" }}
-            onValueChange={(value) => setHighlightId(value)}
+            onValueChange={(value) => setPlayerSubstitute(value)}
             items={buildPlayersOptions()}
             style={customPickerStyles}
           />

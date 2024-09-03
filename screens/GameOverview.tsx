@@ -1,7 +1,9 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import useApplicationStore from "@/stores/ApplicationStore";
-import { HighlightType } from "@/types/HighlightType";
+import { isDisciplinaryHighlight } from "@/types/highlight/DisciplinaryHighlightType";
+import { HighlightType } from "@/types/highlight/HighlightType";
+import { isSubstitutionHighlight } from "@/types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "@/types/NavigationType";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -11,12 +13,30 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
   function renderHighlightList(highlights: HighlightType[]) {
     return (
       <ThemedView style={styles.highlightsList}>
-        {highlights.map((highlight: HighlightType, index) => (
-          <ThemedView key={"home" + index} style={styles.highlightItem}>
-            <ThemedText>{highlight.name}</ThemedText>
-            <ThemedText>{highlight.minute}'</ThemedText>
-          </ThemedView>
-        ))}
+        {highlights.map((highlight: HighlightType, index) => {
+          if (isDisciplinaryHighlight(highlight)) {
+            return (
+              <ThemedView key={"home" + index} style={styles.highlightItem}>
+                <ThemedText>{highlight.label} - {highlight.player}</ThemedText>
+                <ThemedText>{highlight.minute}'</ThemedText>
+              </ThemedView>
+            );
+          } else if (isSubstitutionHighlight(highlight)) {
+            return (
+              <ThemedView key={"home" + index} style={styles.highlightItem}>
+                <ThemedText>{highlight.playerSubstituted} X {highlight.playerSubstitute}</ThemedText>
+                <ThemedText>{highlight.minute}'</ThemedText>
+              </ThemedView>
+            );
+          } else {
+            return (
+              <ThemedView key={"home" + index} style={styles.highlightItem}>
+                <ThemedText>{highlight.label}</ThemedText>
+                <ThemedText>{highlight.minute}'</ThemedText>
+              </ThemedView>
+            );
+          }
+        })}
       </ThemedView>
     );
   }
@@ -27,7 +47,9 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         <ThemedText style={styles.headerTeams}>
           {appStore.teamHome} vs {appStore.teamVisitor}
         </ThemedText>
-        <ThemedText style={styles.headerScores}>{appStore.scoreHome} - {appStore.scoreVisitor}</ThemedText>
+        <ThemedText style={styles.headerScores}>
+          {appStore.scoreHome} - {appStore.scoreVisitor}
+        </ThemedText>
       </ThemedView>
       <ThemedView style={styles.highlightsContainer}>
         {renderHighlightList(appStore.highlightsHome)}
@@ -69,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flex: 1,
     // height: "100%"
-    paddingVertical: 16
+    paddingVertical: 16,
   },
   highlightsList: {
     width: "50%",
@@ -77,7 +99,7 @@ const styles = StyleSheet.create({
   highlightItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   verticalLine: {
     height: "100%",
