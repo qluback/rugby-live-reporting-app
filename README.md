@@ -23,10 +23,10 @@ React Native, Typescript
     - [x] Select field: ScoringHighlight Type (try, convertedTry, penaltyTry, penalty, dropGoal)
     - [x] Select field : Time (1 to 80)
       - [ ] Default value according to timer
-    - [ ] Validate form
-      - [ ] Error no team selected
-      - [ ] Error no minute selected
-      - [ ] Error no highlight data found
+    - [x] Validate form
+      - [x] Error no team selected
+      - [x] Error no minute selected
+      - [x] Error no highlight data found
   - [ ] Tab Players
     - [x] Radio buttons : Team
     - [x] Select field: DisciplinaryHighlight|SubstitutionHighlight Type (yellowCard, redCard | substitution )
@@ -35,9 +35,9 @@ React Native, Typescript
     - [x] Select field: Player involved if DisciplinaryHighlight selected
     - [x] Select field: Player substituted if SubstitutionHighlight selected
     - [x] Select field: Player substitute if SubstitutionHighlight selected
-    - [ ] Validate form
-      - [ ] Error no team selected
-      - [ ] Error no minute selected
-      - [ ] Error no highlight data found
-      - [ ] Error no player involved|substituted
-      - [ ] Error no player substitute if SubstitutionHighlight selected
+    - [x] Validate form
+      - [x] Error no team selected
+      - [x] Error no minute selected
+      - [x] Error no highlight data found
+      - [x] Error no player involved|substituted
+      - [x] Error no player substitute if SubstitutionHighlight selected

@@ -33,6 +33,7 @@ export default function Home({ navigation }: HomeScreenProps) {
       errorTeamHome: appStore.teamHome === "",
       errorTeamVisitor: appStore.teamVisitor === "",
     });
+    
     if (appStore.teamHome === "" || appStore.teamVisitor === "") return;
 
     navigation.navigate("GameOverview");

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { RadioGroup } from "react-native-radio-buttons-group";
 import RNPickerSelect from "react-native-picker-select";
@@ -11,6 +11,9 @@ import { ThemedText } from "../ThemedText";
 import { isDisciplinaryHighlightId } from "@/enums/DisciplinaryHighlightEnum";
 import { PlayerHighlights } from "@/constants/PlayerHighlights";
 import { isSubstitutionHighlightId } from "@/enums/SubstitutionHighlightEnum";
+import { OptionTeamProps } from "@/interfaces/OptionsTeamProps";
+import { PlayerHighlightDataProps } from "@/interfaces/PlayerHighlightDataProps";
+import ErrorMessage from "./ErrorMessage";
 
 interface OptionsProps {
   label: string;
@@ -25,14 +28,20 @@ export default function PlayerHighlightForm({
   const GAME_DURATION_MINUTES = 80;
   const NUMBER_PLAYERS = 23;
   const appStore = useApplicationStore();
-  const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
   const [highlightMinute, setHighlightMinute] = useState<number>(0);
   const [highlightId, setHighlightId] = useState<string>("");
-  const [playerInvolved, setPlayerInvolved] = useState<number | null>(null);
-  const [playerSubstituted, setPlayerSubstituted] = useState<number | null>(
-    null
-  );
-  const [playerSubstitute, setPlayerSubstitute] = useState<number | null>(null);
+  const [playerInvolved, setPlayerInvolved] = useState<number>(0);
+  const [playerSubstituted, setPlayerSubstituted] = useState<number>(0);
+  const [playerSubstitute, setPlayerSubstitute] = useState<number>(0);
+  const [errors, setErrors] = useState({
+    errorTeamSide: false,
+    errorHighlightId: false,
+    errorHighlightMinute: false,
+    errorPlayerInvolved: false,
+    errorPlayerSubstituted: false,
+    errorPlayerSubstitute: false,
+  });
 
   const radioButtons = useMemo(
     () => [
@@ -57,16 +66,16 @@ export default function PlayerHighlightForm({
   function buildHighlightTypeOptions(): OptionsProps[] {
     return [
       {
-        label: "Carton jaune",
-        value: "yellowCard",
+        label: PlayerHighlights.yellowCard.label,
+        value: PlayerHighlights.yellowCard.id,
       },
       {
-        label: "Carton rouge",
-        value: "redCard",
+        label: PlayerHighlights.redCard.label,
+        value: PlayerHighlights.redCard.id,
       },
       {
-        label: "Remplacement",
-        value: "substitution",
+        label: PlayerHighlights.substitution.label,
+        value: PlayerHighlights.substitution.id,
       },
     ];
   }
@@ -89,15 +98,30 @@ export default function PlayerHighlightForm({
     return options;
   }
 
+  function handleChangeHighlightType(highlightId: string) {
+    setHighlightId(highlightId);
+    setPlayerInvolved(0);
+    setPlayerSubstituted(0);
+    setPlayerSubstitute(0);
+  }
+
   function displayPlayerFields() {
     if (isDisciplinaryHighlightId(highlightId)) {
       return (
-        <RNPickerSelect
-          placeholder={{ value: null, label: "Joueur sanctionné" }}
-          onValueChange={(value) => setPlayerInvolved(value)}
-          items={buildPlayersOptions()}
-          style={customPickerStyles}
-        />
+        <>
+          <RNPickerSelect
+            placeholder={{ value: 0, label: "Joueur sanctionné" }}
+            onValueChange={(value) => setPlayerInvolved(value)}
+            items={buildPlayersOptions()}
+            style={customPickerStyles}
+            value={playerInvolved}
+          />
+          {errors.errorPlayerInvolved && (
+            <ErrorMessage>
+              Veuillez renseigner le joueur sanctionné
+            </ErrorMessage>
+          )}
+        </>
       );
     }
 
@@ -105,17 +129,29 @@ export default function PlayerHighlightForm({
       return (
         <>
           <RNPickerSelect
-            placeholder={{ value: null, label: "Joueur remplacé" }}
+            placeholder={{ value: 0, label: "Joueur remplacé" }}
             onValueChange={(value) => setPlayerSubstituted(value)}
             items={buildPlayersOptions()}
             style={customPickerStyles}
+            value={playerSubstituted}
           />
+          {errors.errorPlayerSubstituted && (
+            <ErrorMessage>
+              Veuillez renseigner le joueur remplacé
+            </ErrorMessage>
+          )}
           <RNPickerSelect
-            placeholder={{ value: null, label: "Joueur remplaçant" }}
+            placeholder={{ value: 0, label: "Joueur remplaçant" }}
             onValueChange={(value) => setPlayerSubstitute(value)}
             items={buildPlayersOptions()}
             style={customPickerStyles}
+            value={playerSubstitute}
           />
+          {errors.errorPlayerSubstitute && (
+            <ErrorMessage>
+              Veuillez renseigner le joueur remplaçant
+            </ErrorMessage>
+          )}
         </>
       );
     }
@@ -123,43 +159,66 @@ export default function PlayerHighlightForm({
     return <></>;
   }
 
+  function isFormValid(
+    team: OptionTeamProps | undefined,
+    highlight: PlayerHighlightDataProps | null,
+    minute: number
+  ): boolean {
+    const errorsUpdated = {
+      errorTeamSide: team === undefined,
+      errorHighlightId: highlight === null,
+      errorHighlightMinute: minute === 0,
+      errorPlayerInvolved:
+        highlight !== null &&
+        isDisciplinaryHighlightId(highlight.id) &&
+        playerInvolved === 0,
+      errorPlayerSubstituted:
+        highlight !== null &&
+        isSubstitutionHighlightId(highlight.id) &&
+        playerSubstituted === 0,
+      errorPlayerSubstitute:
+        highlight !== null &&
+        isSubstitutionHighlightId(highlight.id) &&
+        playerSubstitute === 0,
+    };
+    setErrors(errorsUpdated);
+
+    return Object.values(errorsUpdated).every((item) => item === false);
+  }
+
   function handleSubmit() {
     const team = radioButtons.find(
-      (radioButton) => radioButton.id === selectedId
+      (radioButton) => radioButton.id === selectedTeamSide
     );
-    const playerHighlight: { id: string; label: string } | null =
-      highlightId !== undefined ? PlayerHighlights[highlightId] : null;
-    if (
-      playerHighlight === null ||
-      team === undefined ||
-      highlightMinute === undefined
-    )
-      return;
+    const playerHighlightData: PlayerHighlightDataProps | null =
+      highlightId !== "" ? PlayerHighlights[highlightId] : null;
+
+    if (!isFormValid(team, playerHighlightData, highlightMinute)) return;
 
     if (isDisciplinaryHighlightId(highlightId)) {
-      if (playerInvolved === null) return;
+      // if (playerInvolved === null) return;
 
       appStore.addPlayerHighlight(
         {
-          id: playerHighlight.id,
-          label: playerHighlight.label,
+          id: playerHighlightData!.id,
+          label: playerHighlightData!.label,
           player: playerInvolved,
           minute: highlightMinute,
         },
-        team.value
+        team!.value
       );
     } else {
-      if (playerSubstituted === null || playerSubstitute === null) return;
+      // if (playerSubstituted === null || playerSubstitute === null) return;
 
       appStore.addPlayerHighlight(
         {
-          id: playerHighlight.id,
-          label: playerHighlight.label,
+          id: playerHighlightData!.id,
+          label: playerHighlightData!.label,
           playerSubstituted: playerSubstituted,
           playerSubstitute: playerSubstitute,
           minute: highlightMinute,
         },
-        team.value
+        team!.value
       );
     }
 
@@ -171,21 +230,30 @@ export default function PlayerHighlightForm({
       <RadioGroup
         layout="row"
         radioButtons={radioButtons}
-        onPress={setSelectedId}
-        selectedId={selectedId}
+        onPress={setSelectedTeamSide}
+        selectedId={selectedTeamSide}
       />
+      {errors.errorTeamSide && (
+        <ErrorMessage>Veuillez renseigner l'équipe</ErrorMessage>
+      )}
       <RNPickerSelect
         placeholder={{ value: null, label: "Minute" }}
         onValueChange={(value) => setHighlightMinute(value)}
         items={buildHighlightMinuteOptions()}
         style={customPickerStyles}
       />
+      {errors.errorHighlightMinute && (
+        <ErrorMessage>Veuillez renseigner la minute</ErrorMessage>
+      )}
       <RNPickerSelect
         placeholder={{ value: null, label: "Type de temps-fort" }}
-        onValueChange={(value) => setHighlightId(value)}
+        onValueChange={(value) => handleChangeHighlightType(value)}
         items={buildHighlightTypeOptions()}
         style={customPickerStyles}
       />
+      {errors.errorHighlightId && (
+        <ErrorMessage>Veuillez renseigner un temps-fort</ErrorMessage>
+      )}
       {displayPlayerFields()}
       <TouchableOpacity
         style={commonStyles.button}

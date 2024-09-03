@@ -9,6 +9,9 @@ import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import { customPickerStyles } from "@/styles/customPickerStyles";
 import { commonStyles } from "@/styles/commonStyles";
 import { ThemedText } from "../ThemedText";
+import { OptionTeamProps } from "@/interfaces/OptionsTeamProps";
+import { ScoringHighlightDataProps } from "@/interfaces/ScoringHighlightDataProps";
+import ErrorMessage from "./ErrorMessage";
 
 export default function ScoringHighlightForm({
   onSubmitForm,
@@ -17,11 +20,16 @@ export default function ScoringHighlightForm({
 }) {
   const GAME_DURATION_MINUTES = 80;
   const appStore = useApplicationStore();
-  const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
   const [highlightMinute, setHighlightMinute] = useState<number>(0);
   const [highlightId, setHighlightId] = useState<string>("");
+  const [errors, setErrors] = useState({
+    errorTeamSide: false,
+    errorHighlightId: false,
+    errorHighlightMinute: false,
+  });
 
-  const radioButtons = useMemo(
+  const radioButtons: OptionTeamProps[] = useMemo(
     () => [
       {
         id: "1", // acts as primary key, should be unique and non-empty string
@@ -69,52 +77,72 @@ export default function ScoringHighlightForm({
     return options;
   }
 
+  function isFormValid(
+    team: OptionTeamProps | undefined,
+    highlight: ScoringHighlightDataProps | null,
+    minute: number
+  ): boolean {
+    const errorsUpdated = {
+      errorTeamSide: team === undefined,
+      errorHighlightId: highlight === null,
+      errorHighlightMinute: minute === 0,
+    };
+    setErrors(errorsUpdated);
+
+    return Object.values(errorsUpdated).every((item) => item === false);
+  }
+
   function handleSubmit() {
     const team = radioButtons.find(
-      (radioButton) => radioButton.id === selectedId
+      (radioButton) => radioButton.id === selectedTeamSide
     );
-    const scoringHighlight: {id: string, label: string, points: number} | null =
-      highlightId !== undefined ? ScoringHighlights[highlightId] : null;
-    if (
-      scoringHighlight === null ||
-      team === undefined ||
-      highlightMinute === 0
-    )
-      return;
+    const scoringHighlightData: ScoringHighlightDataProps | null =
+      highlightId !== "" ? ScoringHighlights[highlightId] : null;
+
+    if (!isFormValid(team, scoringHighlightData, highlightMinute)) return;
 
     appStore.addScoringHighlight(
       {
-        id: scoringHighlight.id,
-        label: scoringHighlight.label,
-        minute: highlightMinute,
-        points: scoringHighlight.points
+        id: scoringHighlightData!.id,
+        label: scoringHighlightData!.label,
+        minute: highlightMinute!,
+        points: scoringHighlightData!.points,
       },
-      team.value
+      team!.value
     );
+
     onSubmitForm();
   }
 
   return (
     <ThemedView style={styles.formContainer}>
-      {/* <HighlightTabs /> */}
       <RadioGroup
         layout="row"
         radioButtons={radioButtons}
-        onPress={setSelectedId}
-        selectedId={selectedId}
+        onPress={setSelectedTeamSide}
+        selectedId={selectedTeamSide}
       />
+      {errors.errorTeamSide && (
+        <ErrorMessage>Veuillez renseigner l'équipe</ErrorMessage>
+      )}
       <RNPickerSelect
-        placeholder={{ value: null, label: "Minute" }}
-        onValueChange={(value) => setHighlightMinute(value)}
+        placeholder={{ value: 0, label: "Minute" }}
+        onValueChange={(value) => setHighlightMinute(parseInt(value))}
         items={buildHighlightMinuteOptions()}
         style={customPickerStyles}
       />
+      {errors.errorHighlightMinute && (
+        <ErrorMessage>Veuillez renseigner la minute</ErrorMessage>
+      )}
       <RNPickerSelect
         placeholder={{ value: null, label: "Type de temps-fort" }}
         onValueChange={(value) => setHighlightId(value)}
         items={highlightTypeOptions}
         style={customPickerStyles}
       />
+      {errors.errorHighlightId && (
+        <ErrorMessage>Veuillez renseigner un temps-fort</ErrorMessage>
+      )}
       <TouchableOpacity
         style={commonStyles.button}
         activeOpacity={0.9}
