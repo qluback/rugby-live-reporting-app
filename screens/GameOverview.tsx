@@ -1,3 +1,6 @@
+import DisciplinaryHighlightItem from "@/components/highlight/DisciplinaryHighlightItem";
+import ScoringHighlightItem from "@/components/highlight/ScoringHighlightItem";
+import SubstitutionHighlightItem from "@/components/highlight/SubstitutionHighlightItem";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import useApplicationStore from "@/stores/ApplicationStore";
@@ -16,26 +19,24 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         {highlights.map((highlight: HighlightType, index) => {
           if (isDisciplinaryHighlight(highlight)) {
             return (
-              <ThemedView key={"home" + index} style={styles.highlightItem}>
-                <ThemedText>{highlight.label} - {highlight.player}</ThemedText>
-                <ThemedText>{highlight.minute}'</ThemedText>
-              </ThemedView>
-            );
-          } else if (isSubstitutionHighlight(highlight)) {
-            return (
-              <ThemedView key={"home" + index} style={styles.highlightItem}>
-                <ThemedText>{highlight.playerSubstituted} X {highlight.playerSubstitute}</ThemedText>
-                <ThemedText>{highlight.minute}'</ThemedText>
-              </ThemedView>
-            );
-          } else {
-            return (
-              <ThemedView key={"home" + index} style={styles.highlightItem}>
-                <ThemedText>{highlight.label}</ThemedText>
-                <ThemedText>{highlight.minute}'</ThemedText>
-              </ThemedView>
+              <DisciplinaryHighlightItem
+                key={"home" + index}
+                highlight={highlight}
+              />
             );
           }
+          if (isSubstitutionHighlight(highlight)) {
+            return (
+              <SubstitutionHighlightItem
+                key={"home" + index}
+                highlight={highlight}
+              />
+            );
+          }
+
+          return (
+            <ScoringHighlightItem key={"home" + index} highlight={highlight} />
+          );
         })}
       </ThemedView>
     );
