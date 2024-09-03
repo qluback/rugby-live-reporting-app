@@ -17,7 +17,7 @@ React Native, Typescript
   - [x] Button to open "AddHighlight Screen"
   - [ ] //More : Two buttons to open "AddHighlight Screen" with team already selected
 - AddHighlight Screen: report highlight of a team
-  - [ ] Two tabs (Highlight, Players)
+  - [x] Two tabs (Highlight, Players)
   - [ ] Tab Highlight
     - [x] Radio buttons : Team
     - [x] Select field: ScoringHighlight Type (try, convertedTry, penaltyTry, penalty, dropGoal)
@@ -29,11 +29,12 @@ React Native, Typescript
       - [ ] Error no highlight data found
   - [ ] Tab Players
     - [x] Radio buttons : Team
-    - [ ] Select field: PlayerHighlight|SubstitutionHighlight Type (yellowCard, redCard | substitution )
-    - [ ] Select field : Time (1 to 80)
+    - [x] Select field: DisciplinaryHighlight|SubstitutionHighlight Type (yellowCard, redCard | substitution )
+    - [x] Select field : Time (1 to 80)
       - [ ] Default value according to timer
-    - [ ] Select field: Player involved|substituted
-    - [ ] Select field: Player substitute if SubstitutionHighlight selected
+    - [x] Select field: Player involved if DisciplinaryHighlight selected
+    - [x] Select field: Player substituted if SubstitutionHighlight selected
+    - [x] Select field: Player substitute if SubstitutionHighlight selected
     - [ ] Validate form
       - [ ] Error no team selected
       - [ ] Error no minute selected
