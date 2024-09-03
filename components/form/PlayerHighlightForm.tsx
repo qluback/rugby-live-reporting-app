@@ -10,6 +10,7 @@ import { commonStyles } from "@/styles/commonStyles";
 import { ThemedText } from "../ThemedText";
 import { isDisciplinaryHighlightId } from "@/enums/DisciplinaryHighlightEnum";
 import { PlayerHighlights } from "@/constants/PlayerHighlights";
+import { isSubstitutionHighlightId } from "@/enums/SubstitutionHighlightEnum";
 
 interface OptionsProps {
   label: string;
@@ -88,6 +89,40 @@ export default function PlayerHighlightForm({
     return options;
   }
 
+  function displayPlayerFields() {
+    if (isDisciplinaryHighlightId(highlightId)) {
+      return (
+        <RNPickerSelect
+          placeholder={{ value: null, label: "Joueur sanctionné" }}
+          onValueChange={(value) => setPlayerInvolved(value)}
+          items={buildPlayersOptions()}
+          style={customPickerStyles}
+        />
+      );
+    }
+
+    if (isSubstitutionHighlightId(highlightId)) {
+      return (
+        <>
+          <RNPickerSelect
+            placeholder={{ value: null, label: "Joueur remplacé" }}
+            onValueChange={(value) => setPlayerSubstituted(value)}
+            items={buildPlayersOptions()}
+            style={customPickerStyles}
+          />
+          <RNPickerSelect
+            placeholder={{ value: null, label: "Joueur remplaçant" }}
+            onValueChange={(value) => setPlayerSubstitute(value)}
+            items={buildPlayersOptions()}
+            style={customPickerStyles}
+          />
+        </>
+      );
+    }
+
+    return <></>;
+  }
+
   function handleSubmit() {
     const team = radioButtons.find(
       (radioButton) => radioButton.id === selectedId
@@ -130,7 +165,7 @@ export default function PlayerHighlightForm({
 
     onSubmitForm();
   }
-  console.log(highlightId, isDisciplinaryHighlightId(highlightId));
+
   return (
     <ThemedView style={styles.formContainer}>
       <RadioGroup
@@ -151,30 +186,7 @@ export default function PlayerHighlightForm({
         items={buildHighlightTypeOptions()}
         style={customPickerStyles}
       />
-      <Text>{highlightId}</Text>
-      {highlightId !== "substitution" ? (
-        <RNPickerSelect
-          placeholder={{ value: null, label: "Joueur sanctionné" }}
-          onValueChange={(value) => setPlayerInvolved(value)}
-          items={buildPlayersOptions()}
-          style={customPickerStyles}
-        />
-      ) : (
-        <>
-          <RNPickerSelect
-            placeholder={{ value: null, label: "Joueur remplacé" }}
-            onValueChange={(value) => setPlayerSubstituted(value)}
-            items={buildPlayersOptions()}
-            style={customPickerStyles}
-          />
-          <RNPickerSelect
-            placeholder={{ value: null, label: "Joueur remplaçant" }}
-            onValueChange={(value) => setPlayerSubstitute(value)}
-            items={buildPlayersOptions()}
-            style={customPickerStyles}
-          />
-        </>
-      )}
+      {displayPlayerFields()}
       <TouchableOpacity
         style={commonStyles.button}
         activeOpacity={0.9}
