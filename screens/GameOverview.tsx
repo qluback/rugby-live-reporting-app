@@ -3,6 +3,7 @@ import ScoringHighlightItem from "@/components/highlight/ScoringHighlightItem";
 import SubstitutionHighlightItem from "@/components/highlight/SubstitutionHighlightItem";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import Timer from "@/components/Timer";
 import useApplicationStore from "@/stores/ApplicationStore";
 import { isDisciplinaryHighlight } from "@/types/highlight/DisciplinaryHighlightType";
 import { HighlightType } from "@/types/highlight/HighlightType";
@@ -51,6 +52,7 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         <ThemedText style={styles.headerScores}>
           {appStore.scoreHome} - {appStore.scoreVisitor}
         </ThemedText>
+        <Timer />
       </ThemedView>
       <ThemedView style={styles.highlightsContainer}>
         {renderHighlightList(appStore.highlightsHome)}
