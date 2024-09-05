@@ -9,10 +9,31 @@ import { isDisciplinaryHighlight } from "@/types/highlight/DisciplinaryHighlight
 import { HighlightType } from "@/types/highlight/HighlightType";
 import { isSubstitutionHighlight } from "@/types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "@/types/NavigationType";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function GameOverview({ navigation }: GameOverviewScreenProps) {
   const appStore = useApplicationStore();
+
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (event) => {
+      event.preventDefault();
+      Alert.alert(
+        "Match encore en cours",
+        "Êtes-vous sûr de vouloir quitter ?",
+        [
+          { text: "Annuler", style: "cancel", onPress: () => {} },
+          {
+            text: "Quitter",
+            style: "destructive",
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => navigation.dispatch(event.data.action),
+          },
+        ]
+      );
+    });
+  }, [navigation]);
 
   function renderHighlightList(highlights: HighlightType[]) {
     return (
