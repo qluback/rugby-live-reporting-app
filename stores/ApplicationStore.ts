@@ -23,9 +23,10 @@ type Store = {
   ) => void;
   setTimerSeconds: () => void;
   setTimerOn: (status: boolean) => void;
+  getCurrentTimerMinute: () => number;
 };
 
-const useApplicationStore = create<Store>((set) => ({
+const useApplicationStore = create<Store>((set, get) => ({
   teamHome: "Athis-Mons",
   teamVisitor: "Juvisy",
   scoreHome: 0,
@@ -80,7 +81,10 @@ const useApplicationStore = create<Store>((set) => ({
     }),
   setTimerSeconds: () =>
     set((state) => ({ timerSeconds: state.timerSeconds + 1 })),
-  setTimerOn: (status: boolean) => set((state) => ({ timerOn: status })),
+  setTimerOn: (status: boolean) => set({ timerOn: status }),
+  getCurrentTimerMinute: (): number => {
+    return Math.floor(get().timerSeconds / 60) + 1;
+  },
 }));
 
 function compare(a: HighlightType, b: HighlightType) {

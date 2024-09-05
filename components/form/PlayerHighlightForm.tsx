@@ -29,7 +29,7 @@ export default function PlayerHighlightForm({
   const NUMBER_PLAYERS = 23;
   const appStore = useApplicationStore();
   const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
-  const [highlightMinute, setHighlightMinute] = useState<number>(0);
+  const [highlightMinute, setHighlightMinute] = useState<number>(appStore.getCurrentTimerMinute());
   const [highlightId, setHighlightId] = useState<string>("");
   const [playerInvolved, setPlayerInvolved] = useState<number>(0);
   const [playerSubstituted, setPlayerSubstituted] = useState<number>(0);
@@ -241,6 +241,7 @@ export default function PlayerHighlightForm({
         onValueChange={(value) => setHighlightMinute(value)}
         items={buildHighlightMinuteOptions()}
         style={customPickerStyles}
+        value={appStore.getCurrentTimerMinute()}
       />
       {errors.errorHighlightMinute && (
         <ErrorMessage>Veuillez renseigner la minute</ErrorMessage>

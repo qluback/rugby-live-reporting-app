@@ -28,7 +28,7 @@ export default function Timer() {
     appStore.setTimerOn(false);
   };
 
-  function formatTimerSeconds() {
+  function formatTimer() {
     let minutes = Math.floor(appStore.timerSeconds / 60);
     let seconds = appStore.timerSeconds % 60;
     console.log(minutes, seconds);
@@ -37,7 +37,7 @@ export default function Timer() {
 
   return (
     <ThemedView style={{ backgroundColor: "red" }}>
-      <ThemedText>Timer : {formatTimerSeconds()}</ThemedText>
+      <ThemedText>Timer : {formatTimer()}</ThemedText>
       <TouchableOpacity
         activeOpacity={0.9}
         onPress={appStore.timerOn ? stopTimer : startTimer}

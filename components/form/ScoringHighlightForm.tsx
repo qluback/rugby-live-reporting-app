@@ -21,7 +21,7 @@ export default function ScoringHighlightForm({
   const GAME_DURATION_MINUTES = 80;
   const appStore = useApplicationStore();
   const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
-  const [highlightMinute, setHighlightMinute] = useState<number>(0);
+  const [highlightMinute, setHighlightMinute] = useState<number>(appStore.getCurrentTimerMinute());
   const [highlightId, setHighlightId] = useState<string>("");
   const [errors, setErrors] = useState({
     errorTeamSide: false,
@@ -130,6 +130,7 @@ export default function ScoringHighlightForm({
         onValueChange={(value) => setHighlightMinute(parseInt(value))}
         items={buildHighlightMinuteOptions()}
         style={customPickerStyles}
+        value={appStore.getCurrentTimerMinute()}
       />
       {errors.errorHighlightMinute && (
         <ErrorMessage>Veuillez renseigner la minute</ErrorMessage>
