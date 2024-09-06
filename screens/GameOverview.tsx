@@ -9,35 +9,76 @@ import { isDisciplinaryHighlight } from "@/types/highlight/DisciplinaryHighlight
 import { HighlightType } from "@/types/highlight/HighlightType";
 import { isSubstitutionHighlight } from "@/types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "@/types/NavigationType";
-import { useEffect } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function GameOverview({ navigation }: GameOverviewScreenProps) {
   const appStore = useApplicationStore();
+  const [timerInterval, setTimerInterval] = useState<
+    ReturnType<typeof setInterval> | undefined
+  >();
 
-  useEffect(() => {
-    navigation.addListener("beforeRemove", (event) => {
-      event.preventDefault();
-      Alert.alert(
-        "Match encore en cours",
-        "Êtes-vous sûr de vouloir quitter ?",
-        [
-          { text: "Annuler", style: "cancel", onPress: () => {} },
-          {
-            text: "Quitter",
-            style: "destructive",
-            // If the user confirmed, then we dispatch the action we blocked earlier
-            // This will continue the action that had triggered the removal of the screen
-            onPress: () => navigation.dispatch(event.data.action),
-          },
-        ]
-      );
-    });
-  }, [navigation]);
+  const startTimer = () => {
+    console.log("start");
+    clearInterval(timerInterval);
+    appStore.setTimerOn(true);
+    setTimerInterval(
+      setInterval(() => {
+        console.log("setinterval");
+        appStore.setTimerSeconds();
+      }, 1000)
+    );
+  };
+
+  const stopTimer = () => {
+    console.log("end");
+    clearTimeout(timerInterval);
+    appStore.setTimerOn(false);
+  };
+
+  // useEffect(() => {
+  //   navigation.addListener("beforeRemove", (event) => {
+  //     event.preventDefault();
+  //     Alert.alert(
+  //       "Match encore en cours",
+  //       "Êtes-vous sûr de vouloir quitter ?",
+  //       [
+  //         {
+  //           text: "Annuler",
+  //           style: "cancel",
+  //           onPress: () => {
+  //             startTimer();
+  //           },
+  //         },
+  //         {
+  //           text: "Quitter",
+  //           style: "destructive",
+  //           // If the user confirmed, then we dispatch the action we blocked earlier
+  //           // This will continue the action that had triggered the removal of the screen
+  //           onPress: () => {
+  //             appStore.resetStore();
+  //             navigation.dispatch(event.data.action);
+  //           },
+  //         },
+  //       ]
+  //     );
+  //   });
+  //   return () => {
+  //     console.log("unmount");
+  //     clearTimeout(timerInterval)
+  //   }
+  // }, [navigation]);
 
   function renderHighlightList(highlights: HighlightType[]) {
     return (
-      <ThemedView style={styles.highlightsList}>
+      <ScrollView style={styles.highlightsList}>
         {highlights.map((highlight: HighlightType, index) => {
           if (isDisciplinaryHighlight(highlight)) {
             return (
@@ -60,8 +101,29 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
             <ScoringHighlightItem key={"home" + index} highlight={highlight} />
           );
         })}
-      </ThemedView>
+      </ScrollView>
     );
+  }
+
+  function handleQuitGame() {
+    Alert.alert("Match encore en cours", "Êtes-vous sûr de vouloir quitter ?", [
+      {
+        text: "Annuler",
+        style: "cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Quitter",
+        style: "destructive",
+        // If the user confirmed, then we dispatch the action we blocked earlier
+        // This will continue the action that had triggered the removal of the screen
+        onPress: () => {
+          stopTimer();
+          appStore.resetStore();
+          navigation.navigate("Home");
+        },
+      },
+    ]);
   }
 
   return (
@@ -73,7 +135,11 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         <ThemedText style={styles.headerScores}>
           {appStore.scoreHome} - {appStore.scoreVisitor}
         </ThemedText>
-        <Timer />
+        <Timer
+          onStartTimer={startTimer}
+          onStopTimer={stopTimer}
+          onQuitGame={handleQuitGame}
+        />
       </ThemedView>
       <ThemedView style={styles.highlightsContainer}>
         {renderHighlightList(appStore.highlightsHome)}
@@ -114,7 +180,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     flex: 1,
-    // height: "100%"
     paddingVertical: 16,
   },
   highlightsList: {
@@ -133,9 +198,8 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#002A61",
     padding: 16,
-    margin: 16,
+    marginHorizontal: 16,
     marginBottom: 32,
-    // borderRadius: 8
   },
   buttonText: {
     color: "#FFFFFF",

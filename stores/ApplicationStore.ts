@@ -14,6 +14,7 @@ type Store = {
   highlightsVisitor: HighlightType[];
   timerSeconds: number;
   timerOn: boolean;
+  resetStore: () => void;
   setTeamHome: (name: string) => void;
   setTeamVisitor: (name: string) => void;
   addScoringHighlight: (highlight: ScoringHighlightType, team: string) => void;
@@ -26,15 +27,20 @@ type Store = {
   getCurrentTimerMinute: () => number;
 };
 
-const useApplicationStore = create<Store>((set, get) => ({
+const initialState = {
   teamHome: "Athis-Mons",
   teamVisitor: "Juvisy",
   scoreHome: 0,
   scoreVisitor: 0,
   highlightsHome: [],
   highlightsVisitor: [],
-  timerSeconds: 57,
+  timerSeconds: 0,
   timerOn: false,
+};
+
+const useApplicationStore = create<Store>((set, get) => ({
+  ...initialState,
+  resetStore: () => set({...initialState}),
   setTeamHome: (name: string) => set({ teamHome: name }),
   setTeamVisitor: (name: string) => set({ teamVisitor: name }),
   addScoringHighlight: (highlight: ScoringHighlightType, teamSide: string) =>
@@ -64,7 +70,6 @@ const useApplicationStore = create<Store>((set, get) => ({
     teamSide: string
   ) =>
     set((state) => {
-      console.log(highlight);
       let updatedHighlights: HighlightType[] = [];
       switch (teamSide) {
         case TeamSideEnum.HOME:

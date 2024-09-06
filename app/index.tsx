@@ -20,8 +20,9 @@ export default function App() {
         component={GameOverview}
         options={{
           title: "Rapport de match",
-          headerBackTitle: "Retour",
-          headerTintColor: "#002A61",
+          headerLeft: ()=> null,
+          // headerBackTitle: "Retour",
+          // headerTintColor: "#002A61",
         }}
       />
       <Stack.Screen
