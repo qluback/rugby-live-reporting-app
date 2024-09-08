@@ -1,3 +1,4 @@
+import { Game } from "@/constants/Game";
 import { TeamSideEnum } from "@/enums/TeamSideEnum";
 import { DisciplinaryHighlightType } from "@/types/highlight/DisciplinaryHighlightType";
 import { HighlightType } from "@/types/highlight/HighlightType";
@@ -14,6 +15,7 @@ type Store = {
   highlightsVisitor: HighlightType[];
   timerSeconds: number;
   timerOn: boolean;
+  halfTime: number;
   resetStore: () => void;
   setTeamHome: (name: string) => void;
   setTeamVisitor: (name: string) => void;
@@ -25,6 +27,8 @@ type Store = {
   setTimerSeconds: () => void;
   setTimerOn: (status: boolean) => void;
   getCurrentTimerMinute: () => number;
+  endHalfTime: () => void;
+  endGame: () => void;
 };
 
 const initialState = {
@@ -36,11 +40,12 @@ const initialState = {
   highlightsVisitor: [],
   timerSeconds: 0,
   timerOn: false,
+  halfTime: 1,
 };
 
 const useApplicationStore = create<Store>((set, get) => ({
   ...initialState,
-  resetStore: () => set({...initialState}),
+  resetStore: () => set({ ...initialState }),
   setTeamHome: (name: string) => set({ teamHome: name }),
   setTeamVisitor: (name: string) => set({ teamVisitor: name }),
   addScoringHighlight: (highlight: ScoringHighlightType, teamSide: string) =>
@@ -89,6 +94,11 @@ const useApplicationStore = create<Store>((set, get) => ({
   setTimerOn: (status: boolean) => set({ timerOn: status }),
   getCurrentTimerMinute: (): number => {
     return Math.floor(get().timerSeconds / 60) + 1;
+  },
+  endHalfTime: () =>
+    set({ timerSeconds: Game.durationHalfTimeInSeconds, halfTime: 2 }),
+  endGame: () => {
+    get().resetStore();
   },
 }));
 

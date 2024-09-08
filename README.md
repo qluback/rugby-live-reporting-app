@@ -15,12 +15,12 @@ React Native, Typescript
 - Game Overview Screen: watch game overview of the rugby match
   - [x] Button to start/pause the timer
   - [x] Button to open "AddHighlight Screen"
-  - [ ] Change button "Quit" to "End half time" when "Start" button clicked
-    - [ ] Add half time state (1 or 2) in store
-    - [ ] update timer to 40:00 and update half state to 2
-  - [ ] Change button "End half time" to "Quit" when "End half time" button is clicked
-  - [ ] Change button "Quit" to "End game" when "Start" button is clicked
-  - [ ] On click "End game" : display alert to confirm end game, reset store, redirect to home
+  - [x] Change button "Quit" to "End half time" when "Start" button clicked
+    - [x] Add half time state (1 or 2) in store
+    - [x] update timer to 40:00 and update half state to 2
+  - [x] Change button "End half time" to "Quit" when "End half time" button is clicked
+  - [x] Change button "Quit" to "End game" when "Start" button is clicked
+  - [x] On click "End game" : display alert to confirm end game, reset store, redirect to home
   - [ ] //More : Two buttons to open "AddHighlight Screen" with team already selected
 - AddHighlight Screen: report highlight of a team
   - [x] Two tabs (Highlight, Players)
@@ -33,7 +33,7 @@ React Native, Typescript
       - [x] Error no team selected
       - [x] Error no minute selected
       - [x] Error no highlight data found
-  - [ ] Tab Players
+  - [x] Tab Players
     - [x] Radio buttons : Team
     - [x] Select field: DisciplinaryHighlight|SubstitutionHighlight Type (yellowCard, redCard | substitution )
     - [x] Select field : Time (1 to 80)

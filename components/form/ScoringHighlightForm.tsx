@@ -12,13 +12,13 @@ import { ThemedText } from "../ThemedText";
 import { OptionTeamProps } from "@/interfaces/OptionsTeamProps";
 import { ScoringHighlightDataProps } from "@/interfaces/ScoringHighlightDataProps";
 import ErrorMessage from "./ErrorMessage";
+import { Game } from "@/constants/Game";
 
 export default function ScoringHighlightForm({
   onSubmitForm,
 }: {
   onSubmitForm: () => void;
 }) {
-  const GAME_DURATION_MINUTES = 80;
   const appStore = useApplicationStore();
   const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
   const [highlightMinute, setHighlightMinute] = useState<number>(appStore.getCurrentTimerMinute());
@@ -70,7 +70,7 @@ export default function ScoringHighlightForm({
 
   function buildHighlightMinuteOptions() {
     const options = [];
-    for (let index = 1; index <= GAME_DURATION_MINUTES; index++) {
+    for (let index = 1; index <= Game.durationMinutes; index++) {
       options.push({ label: index.toString(), value: index.toString() });
     }
 

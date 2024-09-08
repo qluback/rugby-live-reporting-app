@@ -9,7 +9,7 @@ import { isDisciplinaryHighlight } from "@/types/highlight/DisciplinaryHighlight
 import { HighlightType } from "@/types/highlight/HighlightType";
 import { isSubstitutionHighlight } from "@/types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "@/types/NavigationType";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -43,39 +43,6 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
     appStore.setTimerOn(false);
   };
 
-  // useEffect(() => {
-  //   navigation.addListener("beforeRemove", (event) => {
-  //     event.preventDefault();
-  //     Alert.alert(
-  //       "Match encore en cours",
-  //       "Êtes-vous sûr de vouloir quitter ?",
-  //       [
-  //         {
-  //           text: "Annuler",
-  //           style: "cancel",
-  //           onPress: () => {
-  //             startTimer();
-  //           },
-  //         },
-  //         {
-  //           text: "Quitter",
-  //           style: "destructive",
-  //           // If the user confirmed, then we dispatch the action we blocked earlier
-  //           // This will continue the action that had triggered the removal of the screen
-  //           onPress: () => {
-  //             appStore.resetStore();
-  //             navigation.dispatch(event.data.action);
-  //           },
-  //         },
-  //       ]
-  //     );
-  //   });
-  //   return () => {
-  //     console.log("unmount");
-  //     clearTimeout(timerInterval)
-  //   }
-  // }, [navigation]);
-
   function renderHighlightList(highlights: HighlightType[]) {
     return (
       <ScrollView style={styles.highlightsList}>
@@ -105,6 +72,43 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
     );
   }
 
+  function handleEndHalfTime() {
+    Alert.alert("Fin de la mi-temps", "Êtes-vous sûr de vouloir clôturer la mi-temps ?", [
+      {
+        text: "Annuler",
+        style: "cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Confirmer",
+        style: "destructive",
+        onPress: () => {
+          stopTimer();
+          appStore.endHalfTime();
+        },
+      },
+    ]);
+  }
+
+  function handleEndGame() {
+    Alert.alert("Fin du match", "Êtes-vous sûr de vouloir clôturer le match ?", [
+      {
+        text: "Annuler",
+        style: "cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Confirmer",
+        style: "destructive",
+        onPress: () => {
+          stopTimer();
+          appStore.endGame();
+          navigation.navigate("Home");
+        },
+      },
+    ]);
+  }
+
   function handleQuitGame() {
     Alert.alert("Match encore en cours", "Êtes-vous sûr de vouloir quitter ?", [
       {
@@ -115,8 +119,6 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
       {
         text: "Quitter",
         style: "destructive",
-        // If the user confirmed, then we dispatch the action we blocked earlier
-        // This will continue the action that had triggered the removal of the screen
         onPress: () => {
           stopTimer();
           appStore.resetStore();
@@ -138,6 +140,8 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
         <Timer
           onStartTimer={startTimer}
           onStopTimer={stopTimer}
+          onEndHalfTime={handleEndHalfTime}
+          onEndGame={handleEndGame}
           onQuitGame={handleQuitGame}
         />
       </ThemedView>

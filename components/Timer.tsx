@@ -7,12 +7,16 @@ import { commonStyles } from "@/styles/commonStyles";
 interface Props {
   onStartTimer: () => void;
   onStopTimer: () => void;
+  onEndHalfTime: () => void;
+  onEndGame: () => void;
   onQuitGame: () => void;
 }
 
 export default function Timer({
   onStartTimer,
   onStopTimer,
+  onEndHalfTime,
+  onEndGame,
   onQuitGame,
 }: Props) {
   const appStore = useApplicationStore();
@@ -27,23 +31,59 @@ export default function Timer({
     return `${minutes}:${seconds}`;
   }
 
+  function isStartOfFirstHalfTime(): boolean {
+    return appStore.halfTime === 1 && appStore.timerSeconds === 0;
+  }
+
+  function isStartOfSecondHalfTime(): boolean {
+    return appStore.halfTime === 2 && appStore.timerSeconds === 2400;
+  }
+
+  function renderStopGameButton() {
+    if (
+      !appStore.timerOn &&
+      (isStartOfFirstHalfTime() || isStartOfSecondHalfTime())
+    ) {
+      return (
+        <TouchableOpacity
+          style={[commonStyles.button, styles.buttonStop]}
+          activeOpacity={0.9}
+          onPress={onQuitGame}
+        >
+          <ThemedText style={commonStyles.buttonText}>Quitter</ThemedText>
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        style={[commonStyles.button, styles.buttonStop]}
+        activeOpacity={0.9}
+        onPress={appStore.halfTime === 1 ? onEndHalfTime : onEndGame}
+      >
+        <ThemedText style={commonStyles.buttonText}>
+          {appStore.halfTime === 1 ? "Fin MT" : "Fin match"}
+        </ThemedText>
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.text}>1ère MT : {formatTimer()}</ThemedText>
+      <ThemedText style={styles.text}>
+        {appStore.halfTime === 1 ? "1ère" : "2ème"} MT : {formatTimer()}
+      </ThemedText>
       <ThemedView style={styles.actions}>
-        {/* {!appStore.timerOn && ( */}
-          <TouchableOpacity
-            style={[commonStyles.button, styles.buttonStop]}
-            activeOpacity={0.9}
-            onPress={onQuitGame}
-          >
-            <ThemedText style={commonStyles.buttonText}>Quitter</ThemedText>
-          </TouchableOpacity>
-        {/* )} */}
+        {renderStopGameButton()}
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={appStore.timerOn ? onStopTimer : onStartTimer}
-          style={[commonStyles.button, appStore.timerOn ? {backgroundColor: "lightgreen"} : {backgroundColor: "green"}]}
+          style={[
+            commonStyles.button,
+            appStore.timerOn
+              ? { backgroundColor: "lightgreen" }
+              : { backgroundColor: "green" },
+          ]}
         >
           <ThemedText style={commonStyles.buttonText}>
             {appStore.timerOn ? "Pause" : "Démarrer"}
@@ -67,12 +107,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 16,
     backgroundColor: "#002A61",
-    marginTop: 16
+    marginTop: 16,
   },
   buttonStart: {
     backgroundColor: "green",
   },
   buttonStop: {
     backgroundColor: "red",
-  }
+  },
 });

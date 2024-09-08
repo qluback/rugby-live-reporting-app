@@ -14,6 +14,7 @@ import { isSubstitutionHighlightId } from "@/enums/SubstitutionHighlightEnum";
 import { OptionTeamProps } from "@/interfaces/OptionsTeamProps";
 import { PlayerHighlightDataProps } from "@/interfaces/PlayerHighlightDataProps";
 import ErrorMessage from "./ErrorMessage";
+import { Game } from "@/constants/Game";
 
 interface OptionsProps {
   label: string;
@@ -25,7 +26,6 @@ export default function PlayerHighlightForm({
 }: {
   onSubmitForm: () => void;
 }) {
-  const GAME_DURATION_MINUTES = 80;
   const NUMBER_PLAYERS = 23;
   const appStore = useApplicationStore();
   const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
@@ -82,7 +82,7 @@ export default function PlayerHighlightForm({
 
   function buildHighlightMinuteOptions(): OptionsProps[] {
     const options = [];
-    for (let index = 1; index <= GAME_DURATION_MINUTES; index++) {
+    for (let index = 1; index <= Game.durationMinutes; index++) {
       options.push({ label: index.toString(), value: index.toString() });
     }
 
