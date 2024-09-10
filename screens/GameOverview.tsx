@@ -1,14 +1,14 @@
-import DisciplinaryHighlightItem from "@/components/highlight/DisciplinaryHighlightItem";
-import ScoringHighlightItem from "@/components/highlight/ScoringHighlightItem";
-import SubstitutionHighlightItem from "@/components/highlight/SubstitutionHighlightItem";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import Timer from "@/components/Timer";
-import useApplicationStore from "@/stores/ApplicationStore";
-import { isDisciplinaryHighlight } from "@/types/highlight/DisciplinaryHighlightType";
-import { HighlightType } from "@/types/highlight/HighlightType";
-import { isSubstitutionHighlight } from "@/types/highlight/SubstitutionHighlightType";
-import { GameOverviewScreenProps } from "@/types/NavigationType";
+import DisciplinaryHighlightItem from "../components/highlight/DisciplinaryHighlightItem";
+import ScoringHighlightItem from "../components/highlight/ScoringHighlightItem";
+import SubstitutionHighlightItem from "../components/highlight/SubstitutionHighlightItem";
+import { ThemedText } from "../components/ThemedText";
+import { ThemedView } from "../components/ThemedView";
+import Timer from "../components/Timer";
+import useApplicationStore from "../stores/ApplicationStore";
+import { isDisciplinaryHighlight } from "../types/highlight/DisciplinaryHighlightType";
+import { HighlightType } from "../types/highlight/HighlightType";
+import { isSubstitutionHighlight } from "../types/highlight/SubstitutionHighlightType";
+import { GameOverviewScreenProps } from "../types/NavigationType";
 import { useState } from "react";
 import {
   Alert,
@@ -132,7 +132,7 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
     <ThemedView style={styles.main}>
       <ThemedView style={styles.header}>
         <ThemedText style={styles.headerTeams}>
-          {appStore.teamHome} vs {appStore.teamVisitor}
+          {appStore.teamHome?.name} vs {appStore.teamVisitor?.name}
         </ThemedText>
         <ThemedText style={styles.headerScores}>
           {appStore.scoreHome} - {appStore.scoreVisitor}

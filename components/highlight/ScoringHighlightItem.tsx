@@ -1,7 +1,7 @@
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
-import { highlightStyles } from "@/styles/highlightStyles";
-import { ScoringHighlightType } from "@/types/highlight/ScoringHighlightType";
+import { highlightStyles } from "../../styles/highlightStyles";
+import { ScoringHighlightType } from "../../types/highlight/ScoringHighlightType";
 
 interface Props {
   highlight: ScoringHighlightType;

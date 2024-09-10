@@ -1,8 +1,8 @@
 import Svg, { Path } from "react-native-svg";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
-import { highlightStyles } from "@/styles/highlightStyles";
-import { SubstitutionHighlightType } from "@/types/highlight/SubstitutionHighlightType";
+import { highlightStyles } from "../../styles/highlightStyles";
+import { SubstitutionHighlightType } from "../../types/highlight/SubstitutionHighlightType";
 
 interface Props {
   highlight: SubstitutionHighlightType;

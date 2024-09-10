@@ -2,19 +2,19 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { RadioGroup } from "react-native-radio-buttons-group";
 import RNPickerSelect from "react-native-picker-select";
-import useApplicationStore from "@/stores/ApplicationStore";
+import useApplicationStore from "../../stores/ApplicationStore";
 import { useMemo, useState } from "react";
-import { TeamSideEnum } from "@/enums/TeamSideEnum";
-import { customPickerStyles } from "@/styles/customPickerStyles";
-import { commonStyles } from "@/styles/commonStyles";
+import { TeamSideEnum } from "../../enums/TeamSideEnum";
+import { customPickerStyles } from "../../styles/customPickerStyles";
+import { commonStyles } from "../../styles/commonStyles";
 import { ThemedText } from "../ThemedText";
-import { isDisciplinaryHighlightId } from "@/enums/DisciplinaryHighlightEnum";
-import { PlayerHighlights } from "@/constants/PlayerHighlights";
-import { isSubstitutionHighlightId } from "@/enums/SubstitutionHighlightEnum";
-import { OptionTeamProps } from "@/interfaces/OptionsTeamProps";
-import { PlayerHighlightDataProps } from "@/interfaces/PlayerHighlightDataProps";
+import { isDisciplinaryHighlightId } from "../../enums/DisciplinaryHighlightEnum";
+import { PlayerHighlights } from "../../constants/PlayerHighlights";
+import { isSubstitutionHighlightId } from "../../enums/SubstitutionHighlightEnum";
+import { OptionTeamProps } from "../../interfaces/OptionsTeamProps";
+import { PlayerHighlightDataProps } from "../../interfaces/PlayerHighlightDataProps";
 import ErrorMessage from "./ErrorMessage";
-import { Game } from "@/constants/Game";
+import { Game } from "../../constants/Game";
 
 interface OptionsProps {
   label: string;
@@ -29,7 +29,9 @@ export default function PlayerHighlightForm({
   const NUMBER_PLAYERS = 23;
   const appStore = useApplicationStore();
   const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
-  const [highlightMinute, setHighlightMinute] = useState<number>(appStore.getCurrentTimerMinute());
+  const [highlightMinute, setHighlightMinute] = useState<number>(
+    appStore.getCurrentTimerMinute()
+  );
   const [highlightId, setHighlightId] = useState<string>("");
   const [playerInvolved, setPlayerInvolved] = useState<number>(0);
   const [playerSubstituted, setPlayerSubstituted] = useState<number>(0);
@@ -43,18 +45,18 @@ export default function PlayerHighlightForm({
     errorPlayerSubstitute: false,
   });
 
-  const radioButtons = useMemo(
+  const radioButtons: OptionTeamProps[] = useMemo(
     () => [
       {
         id: "1", // acts as primary key, should be unique and non-empty string
-        label: appStore.teamHome,
+        label: appStore.teamHome!.name,
         value: TeamSideEnum.HOME,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
       },
       {
         id: "2",
-        label: appStore.teamVisitor,
+        label: appStore.teamVisitor!.name,
         value: TeamSideEnum.VISITOR,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
@@ -136,9 +138,7 @@ export default function PlayerHighlightForm({
             value={playerSubstituted}
           />
           {errors.errorPlayerSubstituted && (
-            <ErrorMessage>
-              Veuillez renseigner le joueur remplacé
-            </ErrorMessage>
+            <ErrorMessage>Veuillez renseigner le joueur remplacé</ErrorMessage>
           )}
           <RNPickerSelect
             placeholder={{ value: 0, label: "Joueur remplaçant" }}

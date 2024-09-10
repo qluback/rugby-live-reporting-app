@@ -1,7 +1,7 @@
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
-import { highlightStyles } from "@/styles/highlightStyles";
-import { DisciplinaryHighlightType } from "@/types/highlight/DisciplinaryHighlightType";
+import { highlightStyles } from "../../styles/highlightStyles";
+import { DisciplinaryHighlightType } from "../../types/highlight/DisciplinaryHighlightType";
 
 interface Props {
   highlight: DisciplinaryHighlightType;

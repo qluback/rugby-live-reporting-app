@@ -2,17 +2,17 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { RadioGroup } from "react-native-radio-buttons-group";
 import RNPickerSelect from "react-native-picker-select";
-import { ScoringHighlights } from "@/constants/ScoringHighlights";
-import useApplicationStore from "@/stores/ApplicationStore";
+import { ScoringHighlights } from "../../constants/ScoringHighlights";
+import useApplicationStore from "../../stores/ApplicationStore";
 import { useMemo, useState } from "react";
-import { TeamSideEnum } from "@/enums/TeamSideEnum";
-import { customPickerStyles } from "@/styles/customPickerStyles";
-import { commonStyles } from "@/styles/commonStyles";
+import { TeamSideEnum } from "../../enums/TeamSideEnum";
+import { customPickerStyles } from "../../styles/customPickerStyles";
+import { commonStyles } from "../../styles/commonStyles";
 import { ThemedText } from "../ThemedText";
-import { OptionTeamProps } from "@/interfaces/OptionsTeamProps";
-import { ScoringHighlightDataProps } from "@/interfaces/ScoringHighlightDataProps";
+import { OptionTeamProps } from "../../interfaces/OptionsTeamProps";
+import { ScoringHighlightDataProps } from "../../interfaces/ScoringHighlightDataProps";
 import ErrorMessage from "./ErrorMessage";
-import { Game } from "@/constants/Game";
+import { Game } from "../../constants/Game";
 
 export default function ScoringHighlightForm({
   onSubmitForm,
@@ -21,7 +21,9 @@ export default function ScoringHighlightForm({
 }) {
   const appStore = useApplicationStore();
   const [selectedTeamSide, setSelectedTeamSide] = useState<string>("");
-  const [highlightMinute, setHighlightMinute] = useState<number>(appStore.getCurrentTimerMinute());
+  const [highlightMinute, setHighlightMinute] = useState<number>(
+    appStore.getCurrentTimerMinute()
+  );
   const [highlightId, setHighlightId] = useState<string>("");
   const [errors, setErrors] = useState({
     errorTeamSide: false,
@@ -33,14 +35,14 @@ export default function ScoringHighlightForm({
     () => [
       {
         id: "1", // acts as primary key, should be unique and non-empty string
-        label: appStore.teamHome,
+        label: appStore.teamHome!.name,
         value: TeamSideEnum.HOME,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
       },
       {
         id: "2",
-        label: appStore.teamVisitor,
+        label: appStore.teamVisitor!.name,
         value: TeamSideEnum.VISITOR,
         color: "#002A61",
         labelStyle: { color: "#002A61" },

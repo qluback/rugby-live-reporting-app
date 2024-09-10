@@ -1,14 +1,15 @@
-import { Game } from "@/constants/Game";
-import { TeamSideEnum } from "@/enums/TeamSideEnum";
-import { DisciplinaryHighlightType } from "@/types/highlight/DisciplinaryHighlightType";
-import { HighlightType } from "@/types/highlight/HighlightType";
-import { ScoringHighlightType } from "@/types/highlight/ScoringHighlightType";
-import { SubstitutionHighlightType } from "@/types/highlight/SubstitutionHighlightType";
+import { TeamType } from "../types/TeamType";
+import { Game } from "../constants/Game";
+import { TeamSideEnum } from "../enums/TeamSideEnum";
+import { DisciplinaryHighlightType } from "../types/highlight/DisciplinaryHighlightType";
+import { HighlightType } from "../types/highlight/HighlightType";
+import { ScoringHighlightType } from "../types/highlight/ScoringHighlightType";
+import { SubstitutionHighlightType } from "../types/highlight/SubstitutionHighlightType";
 import { create } from "zustand";
 
 type Store = {
-  teamHome: string;
-  teamVisitor: string;
+  teamHome: TeamType | null;
+  teamVisitor: TeamType | null;
   scoreHome: number;
   scoreVisitor: number;
   highlightsHome: HighlightType[];
@@ -17,8 +18,7 @@ type Store = {
   timerOn: boolean;
   halfTime: number;
   resetStore: () => void;
-  setTeamHome: (name: string) => void;
-  setTeamVisitor: (name: string) => void;
+  setTeam: (team: TeamType, side: TeamSideEnum) => void;
   addScoringHighlight: (highlight: ScoringHighlightType, team: string) => void;
   addPlayerHighlight: (
     highlight: DisciplinaryHighlightType | SubstitutionHighlightType,
@@ -32,8 +32,8 @@ type Store = {
 };
 
 const initialState = {
-  teamHome: "Athis-Mons",
-  teamVisitor: "Juvisy",
+  teamHome: null,
+  teamVisitor: null,
   scoreHome: 0,
   scoreVisitor: 0,
   highlightsHome: [],
@@ -46,8 +46,15 @@ const initialState = {
 const useApplicationStore = create<Store>((set, get) => ({
   ...initialState,
   resetStore: () => set({ ...initialState }),
-  setTeamHome: (name: string) => set({ teamHome: name }),
-  setTeamVisitor: (name: string) => set({ teamVisitor: name }),
+  setTeam: (team: TeamType, side: TeamSideEnum) =>
+    set(() => {
+      switch (side) {
+        case TeamSideEnum.HOME:
+          return { teamHome: team };
+        case TeamSideEnum.VISITOR:
+          return { teamVisitor: team };
+      }
+    }),
   addScoringHighlight: (highlight: ScoringHighlightType, teamSide: string) =>
     set((state) => {
       let updatedHighlights: HighlightType[] = [];

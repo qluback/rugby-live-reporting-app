@@ -1,40 +1,94 @@
 import { Image, StyleSheet, TouchableOpacity, Text } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { Colors } from "@/constants/Colors";
+import ParallaxScrollView from "../components/ParallaxScrollView";
+import { ThemedText } from "../components/ThemedText";
+import { Colors } from "../constants/Colors";
 import RNPickerSelect from "react-native-picker-select";
-import { HomeScreenProps } from "@/types/NavigationType";
-import useApplicationStore from "@/stores/ApplicationStore";
-import { ThemedView } from "@/components/ThemedView";
-import { useState } from "react";
-import { customPickerStyles } from "@/styles/customPickerStyles";
-import { commonStyles } from "@/styles/commonStyles";
+import { HomeScreenProps } from "../types/NavigationType";
+import useApplicationStore from "../stores/ApplicationStore";
+import { ThemedView } from "../components/ThemedView";
+import { useEffect, useState } from "react";
+import { customPickerStyles } from "../styles/customPickerStyles";
+import { commonStyles } from "../styles/commonStyles";
+import { TeamSideEnum } from "../enums/TeamSideEnum";
+import { TeamDto } from "../dto/TeamDto";
+import { TeamType } from "../types/TeamType";
 
 export default function Home({ navigation }: HomeScreenProps) {
-  // const teamHome = useApplicationStore((state) => state.teamHome);
-  // const teamVisitor = useApplicationStore((state) => state.teamVisitor);
   const appStore = useApplicationStore();
   const placeholder = {
     value: null,
     color: Colors.light.text,
   };
-  const options = [
-    { label: "Athis-Mons", value: "Athis-Mons" },
-    { label: "Juvisy", value: "Juvisy" },
-    { label: "Lognes", value: "Lognes" },
-  ];
+  const [teamsAvailable, setTeamsAvailable] = useState<TeamType[]>([]);
+
   const [errors, setErrors] = useState({
     errorTeamHome: false,
     errorTeamVisitor: false,
+    errorSameTeam: false,
   });
 
-  function handleSubmit() {
-    setErrors({
-      errorTeamHome: appStore.teamHome === "",
-      errorTeamVisitor: appStore.teamVisitor === "",
+  async function getTeams() {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/teams");
+      const data: TeamDto[] = await response.json();
+
+      const transformedTeams: TeamType[] = [];
+      data.map((team) => {
+        transformedTeams.push(team);
+      });
+
+      setTeamsAvailable(transformedTeams);
+    } catch (e) {
+      setTeamsAvailable([]);
+    }
+  }
+
+  useEffect(() => {
+    getTeams();
+  }, []);
+
+  function buildTeamOptions() {
+    const options: { label: string; value: number }[] = [];
+    teamsAvailable.map((team) => {
+      options.push({ label: team.name, value: team.id });
     });
-    
-    if (appStore.teamHome === "" || appStore.teamVisitor === "") return;
+
+    return options;
+  }
+
+  function handleSelectTeam(id: number, side: TeamSideEnum) {
+    const team: TeamType | undefined = teamsAvailable.find(
+      (team) => team.id === id
+    );
+
+    if (team === undefined) return;
+
+    appStore.setTeam(team, side);
+  }
+
+  function handleSubmit() {
+    let errorsUpdated = {
+      errorTeamHome: appStore.teamHome === null,
+      errorTeamVisitor: appStore.teamVisitor === null,
+      errorSameTeam:
+        appStore.teamHome !== null &&
+        appStore.teamVisitor !== null &&
+        appStore.teamHome === appStore.teamVisitor,
+    };
+
+    if (!errorsUpdated.errorTeamHome && !errorsUpdated.errorTeamVisitor) {
+      errorsUpdated = {
+        ...errorsUpdated,
+        errorSameTeam:
+          appStore.teamHome !== null &&
+          appStore.teamVisitor !== null &&
+          appStore.teamHome === appStore.teamVisitor,
+      };
+    }
+
+    setErrors(errorsUpdated);
+
+    if (!Object.values(errorsUpdated).every((item) => item === false)) return;
 
     navigation.navigate("GameOverview");
   }
@@ -55,10 +109,12 @@ export default function Home({ navigation }: HomeScreenProps) {
           <ThemedView>
             <RNPickerSelect
               placeholder={{ ...placeholder, label: "Domicile" }}
-              onValueChange={(value) => appStore.setTeamHome(value)}
-              items={options}
+              onValueChange={(value) =>
+                handleSelectTeam(parseInt(value), TeamSideEnum.HOME)
+              }
+              items={buildTeamOptions()}
               style={customPickerStyles}
-              value={appStore.teamHome !== "" ? appStore.teamHome : null}
+              value={appStore.teamHome !== null ? appStore.teamHome.id : null}
             />
             {errors.errorTeamHome && (
               <ThemedText style={commonStyles.errorMessage}>
@@ -69,10 +125,14 @@ export default function Home({ navigation }: HomeScreenProps) {
           <ThemedView>
             <RNPickerSelect
               placeholder={{ ...placeholder, label: "Visiteur" }}
-              onValueChange={(value) => appStore.setTeamVisitor(value)}
-              items={options}
+              onValueChange={(value) =>
+                handleSelectTeam(parseInt(value), TeamSideEnum.VISITOR)
+              }
+              items={buildTeamOptions()}
               style={customPickerStyles}
-              value={appStore.teamVisitor !== "" ? appStore.teamVisitor : null}
+              value={
+                appStore.teamVisitor !== null ? appStore.teamVisitor.id : null
+              }
             />
             {errors.errorTeamVisitor && (
               <ThemedText style={commonStyles.errorMessage}>
@@ -80,6 +140,11 @@ export default function Home({ navigation }: HomeScreenProps) {
               </ThemedText>
             )}
           </ThemedView>
+          {errors.errorSameTeam && (
+            <ThemedText style={commonStyles.errorMessage}>
+              Veuillez sélectionner deux équipes différentes
+            </ThemedText>
+          )}
           <TouchableOpacity
             style={commonStyles.button}
             activeOpacity={0.9}

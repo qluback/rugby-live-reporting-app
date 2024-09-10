@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/commonStyles";
+import { commonStyles } from "../../styles/commonStyles";
 import { ThemedText } from "../ThemedText";
 
 interface ErrorMessageProps { children: string };

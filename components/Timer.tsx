@@ -1,8 +1,8 @@
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
-import useApplicationStore from "@/stores/ApplicationStore";
+import useApplicationStore from "../stores/ApplicationStore";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { commonStyles } from "@/styles/commonStyles";
+import { commonStyles } from "../styles/commonStyles";
 
 interface Props {
   onStartTimer: () => void;
