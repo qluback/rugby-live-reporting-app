@@ -3,7 +3,7 @@ import ParallaxScrollView from "../components/ParallaxScrollView";
 import { ThemedText } from "../components/ThemedText";
 import { Colors } from "../constants/Colors";
 import RNPickerSelect from "react-native-picker-select";
-import { HomeScreenProps } from "../types/NavigationType";
+import { NewGameScreenProps } from "../types/NavigationType";
 import useApplicationStore from "../stores/ApplicationStore";
 import { ThemedView } from "../components/ThemedView";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import { TeamSideEnum } from "../enums/TeamSideEnum";
 import { TeamDto } from "../dto/TeamDto";
 import { TeamType } from "../types/TeamType";
 
-export default function Home({ navigation }: HomeScreenProps) {
+export default function NewGame({ navigation }: NewGameScreenProps) {
   const appStore = useApplicationStore();
   const placeholder = {
     value: null,
@@ -29,7 +29,7 @@ export default function Home({ navigation }: HomeScreenProps) {
 
   async function getTeams() {
     try {
-      const response = await fetch("http://127.0.0.1:8000/teams");
+      const response = await fetch("http://127.0.0.1:8000/api/teams");
       const data: TeamDto[] = await response.json();
 
       const transformedTeams: TeamType[] = [];

@@ -1,9 +1,10 @@
-import AddHighlight from "@/screens/AddHighlight";
-import GameOverview from "@/screens/GameOverview";
-import Home from "@/screens/Home";
-import { StackParamList } from "@/types/NavigationType";
+import AddHighlight from "../screens/AddHighlight";
+import GameOverview from "../screens/GameOverview";
+import { StackParamList } from "../types/NavigationType";
 import { createStackNavigator } from "@react-navigation/stack";
 import "../assets/js/gesture-handler";
+import HomeTabs from "../screens/HomeTabs";
+import NewGame from "../screens/NewGame";
 
 export default function App() {
   const Stack = createStackNavigator<StackParamList>();
@@ -12,7 +13,7 @@ export default function App() {
     <Stack.Navigator>
       <Stack.Screen
         name="Home"
-        component={Home}
+        component={HomeTabs}
         options={{ title: "Jour de match", headerTintColor: "#002A61" }}
       />
       <Stack.Screen
