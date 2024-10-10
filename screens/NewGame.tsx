@@ -25,6 +25,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
     errorTeamHome: false,
     errorTeamVisitor: false,
     errorSameTeam: false,
+    errorPostRequest: false,
   });
 
   async function getTeams() {
@@ -74,6 +75,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
         appStore.teamHome !== null &&
         appStore.teamVisitor !== null &&
         appStore.teamHome === appStore.teamVisitor,
+      errorPostRequest: false,
     };
 
     if (!errorsUpdated.errorTeamHome && !errorsUpdated.errorTeamVisitor) {
@@ -90,10 +92,6 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
 
     if (!Object.values(errorsUpdated).every((item) => item === false)) return;
 
-    console.log(appStore.teamHome, appStore.teamVisitor, {
-      teamHome: appStore.teamHome!.id,
-      teamVisitor: appStore.teamVisitor!.id,
-    });
     try {
       const response = await fetch("http://127.0.0.1:8000/api/games", {
         method: "POST",
@@ -108,10 +106,14 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
       })
 
       if (!response.ok) {
-        console.log(response);
+        setErrors(prevErrors => ({...prevErrors, errorPostRequest: true}));
+
+        return;
       }
     } catch (e) {
-        console.log(e);
+      setErrors(prevErrors => ({...prevErrors, errorPostRequest: true}));
+
+      return;
     }
 
     navigation.navigate("GameOverview");
@@ -173,9 +175,15 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
             style={commonStyles.button}
             activeOpacity={0.9}
             onPress={handleSubmit}
-          >
+            >
             <Text style={commonStyles.buttonText}>Valider</Text>
           </TouchableOpacity>
+          {errors.errorPostRequest && (
+            <ThemedText style={commonStyles.errorMessage}>
+              Une erreur est survenue lors de la création du match. 
+              Veuillez réessayer ultérieurement.
+            </ThemedText>
+          )}
         </ThemedView>
       </ThemedView>
     </ParallaxScrollView>
