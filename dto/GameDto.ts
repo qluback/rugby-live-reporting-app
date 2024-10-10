@@ -2,8 +2,8 @@ import { TeamType } from "../types/TeamType";
 
 export interface GameDto {
   id: number,
-  teamHome: {id: number, team: TeamType},
-  teamVisitor: {id: number, team: TeamType},
+  teamCompetingHome: {id: number, team: TeamType},
+  teamCompetingVisitor: {id: number, team: TeamType},
   scoreHome: number,
   scoreVisitor: number
 }

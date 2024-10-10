@@ -15,12 +15,13 @@ export default function History({ navigation }: HistoryScreenProps) {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/games");
       const data: GameDto[] = await response.json();
-
+      
       const transformedGames: GameType[] = [];
       data.map((game) => {
         const transformedGame: GameType = {
-          teamHome: game.teamHome.team.name,
-          teamVisitor: game.teamVisitor.team.name,
+          id: game.id,
+          teamHome: game.teamCompetingHome.team.name,
+          teamVisitor: game.teamCompetingVisitor.team.name,
           scoreHome: game.scoreHome,
           scoreVisitor: game.scoreVisitor
         };
@@ -34,8 +35,12 @@ export default function History({ navigation }: HistoryScreenProps) {
   }
 
   useEffect(() => {
-    getGames();
-  }, []);
+    const focusHistory = navigation.addListener("focus", () => {
+      getGames();
+    });
+
+    return focusHistory;
+  }, [navigation]);
 
   return (
     <ParallaxScrollView
@@ -50,7 +55,7 @@ export default function History({ navigation }: HistoryScreenProps) {
       <ThemedText>Matchs</ThemedText>
       <ThemedView>
         {games.map(game => (
-          <ThemedText>{game.teamHome} {game.scoreHome} - {game.scoreVisitor} {game.teamVisitor}</ThemedText>
+          <ThemedText key={game.id}>{game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor} {game.teamVisitor}</ThemedText>
         ))}
       </ThemedView>
     </ParallaxScrollView>

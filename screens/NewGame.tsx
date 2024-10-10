@@ -66,7 +66,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
     appStore.setTeam(team, side);
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     let errorsUpdated = {
       errorTeamHome: appStore.teamHome === null,
       errorTeamVisitor: appStore.teamVisitor === null,
@@ -89,6 +89,30 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
     setErrors(errorsUpdated);
 
     if (!Object.values(errorsUpdated).every((item) => item === false)) return;
+
+    console.log(appStore.teamHome, appStore.teamVisitor, {
+      teamHome: appStore.teamHome!.id,
+      teamVisitor: appStore.teamVisitor!.id,
+    });
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/games", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          teamHome: appStore.teamHome!.id,
+          teamVisitor: appStore.teamVisitor!.id,
+        })
+      })
+
+      if (!response.ok) {
+        console.log(response);
+      }
+    } catch (e) {
+        console.log(e);
+    }
 
     navigation.navigate("GameOverview");
   }
