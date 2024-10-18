@@ -1,4 +1,4 @@
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, Text } from "react-native";
 import ParallaxScrollView from "../components/ParallaxScrollView";
 import { ThemedText } from "../components/ThemedText";
 import { Colors } from "../constants/Colors";
@@ -8,15 +8,18 @@ import { GameType } from "../types/GameType";
 import { GameDto } from "../dto/GameDto";
 import { ThemedView } from "../components/ThemedView";
 import { SuccessResponseDto } from "../dto/SuccessResponseDto";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import useApplicationStore from "../stores/ApplicationStore";
 
 export default function History({ navigation }: HistoryScreenProps) {
+  const appStore = useApplicationStore();
   const [games, setGames] = useState<GameType[]>([]);
 
   async function getGames() {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/games");
       const jsonResponse: SuccessResponseDto = await response.json();
-      
+
       const transformedGames: GameType[] = [];
       jsonResponse.data.map((game: GameDto) => {
         const transformedGame: GameType = {
@@ -24,12 +27,13 @@ export default function History({ navigation }: HistoryScreenProps) {
           teamHome: game.teamCompetingHome.team.name,
           teamVisitor: game.teamCompetingVisitor.team.name,
           scoreHome: game.scoreHome,
-          scoreVisitor: game.scoreVisitor
+          scoreVisitor: game.scoreVisitor,
         };
         transformedGames.push(transformedGame);
       });
       setGames(transformedGames);
     } catch (e) {
+      console.log(e);
       setGames([]);
     }
   }
@@ -53,9 +57,22 @@ export default function History({ navigation }: HistoryScreenProps) {
       }
     >
       <ThemedText>Matchs</ThemedText>
+      <TouchableOpacity
+        onPress={async () => {
+          const response = await fetch("http://127.0.0.1:8000/api/games/16");
+      const jsonResponse: SuccessResponseDto = await response.json();
+      appStore.setGame(jsonResponse.data);
+          navigation.navigate("GameOverview");
+        }}
+      >
+        <Text>Test</Text>
+      </TouchableOpacity>
       <ThemedView>
-        {games.map(game => (
-          <ThemedText key={game.id}>{game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor} {game.teamVisitor}</ThemedText>
+        {games.map((game) => (
+          <ThemedText key={game.id}>
+            {game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor}{" "}
+            {game.teamVisitor}
+          </ThemedText>
         ))}
       </ThemedView>
     </ParallaxScrollView>

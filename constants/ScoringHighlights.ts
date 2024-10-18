@@ -1,4 +1,4 @@
-import { ScoringHighlightEnum } from "@/enums/ScoringHighlightEnum";
+import { ScoringHighlightEnum } from "../enums/ScoringHighlightEnum";
 
 
 export const ScoringHighlights: Record<

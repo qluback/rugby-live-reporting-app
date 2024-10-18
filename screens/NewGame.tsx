@@ -12,6 +12,7 @@ import { commonStyles } from "../styles/commonStyles";
 import { TeamSideEnum } from "../enums/TeamSideEnum";
 import { TeamDto } from "../dto/TeamDto";
 import { TeamType } from "../types/TeamType";
+import { SuccessResponseDto } from "../dto/SuccessResponseDto";
 
 export default function NewGame({ navigation }: NewGameScreenProps) {
   const appStore = useApplicationStore();
@@ -42,6 +43,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
 
       setTeamsAvailable(transformedTeams);
     } catch (e) {
+      console.error(e);
       setTeamsAvailable([]);
     }
   }
@@ -66,7 +68,6 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
 
     if (team === undefined) return;
 
-    // appStore.setTeam(team, side);
     if (side === TeamSideEnum.HOME) {
       setTeamHome(team);
     } else {
@@ -120,9 +121,10 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
         return;
       }
 
-      const responseDecoded = await response.json();
-      appStore.setGame(responseDecoded.data);
+      const jsonResponse: SuccessResponseDto = await response.json();
+      appStore.setGame(jsonResponse.data);
     } catch (e) {
+      console.error(e);
       setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
 
       return;

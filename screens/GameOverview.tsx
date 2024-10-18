@@ -26,19 +26,16 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
   >();
 
   const startTimer = () => {
-    console.log("start");
     clearInterval(timerInterval);
     appStore.setTimerOn(true);
     setTimerInterval(
       setInterval(() => {
-        console.log("setinterval");
         appStore.setTimerSeconds();
       }, 1000)
     );
   };
 
   const stopTimer = () => {
-    console.log("end");
     clearTimeout(timerInterval);
     appStore.setTimerOn(false);
   };

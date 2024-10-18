@@ -104,7 +104,7 @@ export default function ScoringHighlightForm({
       highlightId !== "" ? ScoringHighlights[highlightId] : null;
 
     if (!isFormValid(team, scoringHighlightData, highlightMinute)) return;
-console.log(team);
+
     appStore.addScoringHighlight(
       {
         id: scoringHighlightData!.id,
@@ -125,9 +125,7 @@ console.log(team);
         body: JSON.stringify({
           teamCompetingId: 32,
           type: scoringHighlightData!.id,
-          // label: scoringHighlightData!.label,
           minute: highlightMinute,
-          // points: scoringHighlightData!.points,
         }),
       });
 
@@ -137,6 +135,7 @@ console.log(team);
         return;
       }
     } catch (e) {
+      console.error(e);
       setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
 
       return;

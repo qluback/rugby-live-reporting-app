@@ -1,4 +1,4 @@
-import { Colors } from "@/constants/Colors";
+import { Colors } from "../constants/Colors";
 import { StyleSheet } from "react-native";
 
 export const customPickerStyles = StyleSheet.create({
@@ -8,7 +8,6 @@ export const customPickerStyles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: Colors.light.tint,
-    // borderRadius: 8,
     color: Colors.light.text,
     paddingRight: 30, // to ensure the text is never behind the icon
   },
@@ -18,7 +17,6 @@ export const customPickerStyles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
     borderColor: "blue",
-    // borderRadius: 8,
     color: "black",
     paddingRight: 30, // to ensure the text is never behind the icon
   },

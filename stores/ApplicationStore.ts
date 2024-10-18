@@ -1,4 +1,3 @@
-import { TeamType } from "../types/TeamType";
 import { Game } from "../constants/Game";
 import { TeamSideEnum } from "../enums/TeamSideEnum";
 import { DisciplinaryHighlightType } from "../types/highlight/DisciplinaryHighlightType";
@@ -7,6 +6,7 @@ import { ScoringHighlightType } from "../types/highlight/ScoringHighlightType";
 import { SubstitutionHighlightType } from "../types/highlight/SubstitutionHighlightType";
 import { create } from "zustand";
 import { TeamCompetingType } from "../types/TeamCompetingType";
+import { formatHighlights } from "../services/HighlightFormatter";
 
 type Store = {
   teamHome: TeamCompetingType | null;
@@ -49,12 +49,13 @@ const useApplicationStore = create<Store>((set, get) => ({
   ...initialState,
   setGame: (game) =>
     set(() => {
-      console.log(game.teamCompetingHome);
       return {
         teamHome: game.teamCompetingHome,
         teamVisitor: game.teamCompetingVisitor,
         scoreHome: game.scoreHome,
         scoreVisitor: game.scoreVisitor,
+        highlightsHome: formatHighlights(game.teamCompetingHome.highlights),
+        highlightsVisitor: formatHighlights(game.teamCompetingVisitor.highlights),
       };
     }),
   resetStore: () => set({ ...initialState }),

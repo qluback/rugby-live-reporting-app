@@ -22,7 +22,6 @@ export default function Timer({
   const appStore = useApplicationStore();
 
   function formatTimer() {
-    console.log("format", appStore.timerSeconds);
     const minutes = Math.floor(appStore.timerSeconds / 60)
       .toString()
       .padStart(2, "0");

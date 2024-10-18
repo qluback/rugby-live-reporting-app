@@ -4,7 +4,6 @@ import { StackParamList } from "../types/NavigationType";
 import { createStackNavigator } from "@react-navigation/stack";
 import "../assets/js/gesture-handler";
 import HomeTabs from "../screens/HomeTabs";
-import NewGame from "../screens/NewGame";
 
 export default function App() {
   const Stack = createStackNavigator<StackParamList>();

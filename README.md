@@ -12,6 +12,8 @@ React Native, Typescript
 - Configuration Game Screen: configure the rugby match
   - [x] Form to select home and visitor teams
   - [x] Button to submit form and open "Game Overview Screen"
+  - [x] POST new game in DB
+    - [x] Handle error on POST request
 - Game Overview Screen: watch game overview of the rugby match
   - [x] Button to start/pause the timer
   - [x] Button to open "AddHighlight Screen"
@@ -33,6 +35,8 @@ React Native, Typescript
       - [x] Error no team selected
       - [x] Error no minute selected
       - [x] Error no highlight data found
+    - [x] POST new highlight
+      - [x] Handle error on POST highlight
   - [x] Tab Players
     - [x] Radio buttons : Team
     - [x] Select field: DisciplinaryHighlight|SubstitutionHighlight Type (yellowCard, redCard | substitution )
@@ -47,3 +51,11 @@ React Native, Typescript
       - [x] Error no highlight data found
       - [x] Error no player involved|substituted
       - [x] Error no player substitute if SubstitutionHighlight selected
+- History Screen
+  - [x] Display list of past games
+  - [x] GET all games
+    - [ ] Handle error on GET all games
+  - [ ] On click row past game, redirect to GameOverview screen with all data from game
+    - [ ] Navigate to GameOverview with game ID in route params
+    - [x] GET game by id
+      - [ ] Handle error GET game by id
