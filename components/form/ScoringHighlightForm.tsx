@@ -29,20 +29,21 @@ export default function ScoringHighlightForm({
     errorTeamSide: false,
     errorHighlightId: false,
     errorHighlightMinute: false,
+    errorPostRequest: false,
   });
 
   const radioButtons: OptionTeamProps[] = useMemo(
     () => [
       {
         id: "1", // acts as primary key, should be unique and non-empty string
-        label: appStore.teamHome!.name,
+        label: appStore.teamHome!.team.name,
         value: TeamSideEnum.HOME,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
       },
       {
         id: "2",
-        label: appStore.teamVisitor!.name,
+        label: appStore.teamVisitor!.team.name,
         value: TeamSideEnum.VISITOR,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
@@ -88,13 +89,14 @@ export default function ScoringHighlightForm({
       errorTeamSide: team === undefined,
       errorHighlightId: highlight === null,
       errorHighlightMinute: minute === 0,
+      errorPostRequest: false,
     };
     setErrors(errorsUpdated);
 
     return Object.values(errorsUpdated).every((item) => item === false);
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const team = radioButtons.find(
       (radioButton) => radioButton.id === selectedTeamSide
     );
@@ -102,16 +104,43 @@ export default function ScoringHighlightForm({
       highlightId !== "" ? ScoringHighlights[highlightId] : null;
 
     if (!isFormValid(team, scoringHighlightData, highlightMinute)) return;
-
+console.log(team);
     appStore.addScoringHighlight(
       {
         id: scoringHighlightData!.id,
         label: scoringHighlightData!.label,
-        minute: highlightMinute!,
+        minute: highlightMinute,
         points: scoringHighlightData!.points,
       },
       team!.value
     );
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/highlights", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          teamCompetingId: 32,
+          type: scoringHighlightData!.id,
+          // label: scoringHighlightData!.label,
+          minute: highlightMinute,
+          // points: scoringHighlightData!.points,
+        }),
+      });
+
+      if (!response.ok) {
+        setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
+
+        return;
+      }
+    } catch (e) {
+      setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
+
+      return;
+    }
 
     onSubmitForm();
   }
@@ -132,7 +161,7 @@ export default function ScoringHighlightForm({
         onValueChange={(value) => setHighlightMinute(parseInt(value))}
         items={buildHighlightMinuteOptions()}
         style={customPickerStyles}
-        value={appStore.getCurrentTimerMinute()}
+        value={highlightMinute}
       />
       {errors.errorHighlightMinute && (
         <ErrorMessage>Veuillez renseigner la minute</ErrorMessage>
@@ -153,6 +182,12 @@ export default function ScoringHighlightForm({
       >
         <ThemedText style={commonStyles.buttonText}>Valider</ThemedText>
       </TouchableOpacity>
+      {errors.errorPostRequest && (
+        <ThemedText style={commonStyles.errorMessage}>
+          Une erreur est survenue lors de la création du temps-fort. Veuillez
+          réessayer ultérieurement.
+        </ThemedText>
+      )}
     </ThemedView>
   );
 }

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import ParallaxScrollView from "../components/ParallaxScrollView";
 import { ThemedText } from "../components/ThemedText";
 import { Colors } from "../constants/Colors";
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { GameType } from "../types/GameType";
 import { GameDto } from "../dto/GameDto";
 import { ThemedView } from "../components/ThemedView";
+import { SuccessResponseDto } from "../dto/SuccessResponseDto";
 
 export default function History({ navigation }: HistoryScreenProps) {
   const [games, setGames] = useState<GameType[]>([]);
@@ -14,10 +15,10 @@ export default function History({ navigation }: HistoryScreenProps) {
   async function getGames() {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/games");
-      const data: GameDto[] = await response.json();
+      const jsonResponse: SuccessResponseDto = await response.json();
       
       const transformedGames: GameType[] = [];
-      data.map((game) => {
+      jsonResponse.data.map((game: GameDto) => {
         const transformedGame: GameType = {
           id: game.id,
           teamHome: game.teamCompetingHome.team.name,
@@ -27,7 +28,6 @@ export default function History({ navigation }: HistoryScreenProps) {
         };
         transformedGames.push(transformedGame);
       });
-
       setGames(transformedGames);
     } catch (e) {
       setGames([]);

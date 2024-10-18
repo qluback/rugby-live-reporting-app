@@ -49,14 +49,14 @@ export default function PlayerHighlightForm({
     () => [
       {
         id: "1", // acts as primary key, should be unique and non-empty string
-        label: appStore.teamHome!.name,
+        label: appStore.teamHome!.team.name,
         value: TeamSideEnum.HOME,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
       },
       {
         id: "2",
-        label: appStore.teamVisitor!.name,
+        label: appStore.teamVisitor!.team.name,
         value: TeamSideEnum.VISITOR,
         color: "#002A61",
         labelStyle: { color: "#002A61" },

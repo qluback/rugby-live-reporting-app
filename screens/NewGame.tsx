@@ -20,6 +20,8 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
     color: Colors.light.text,
   };
   const [teamsAvailable, setTeamsAvailable] = useState<TeamType[]>([]);
+  const [teamHome, setTeamHome] = useState<TeamType | null>(null);
+  const [teamVisitor, setTeamVisitor] = useState<TeamType | null>(null);
 
   const [errors, setErrors] = useState({
     errorTeamHome: false,
@@ -64,17 +66,24 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
 
     if (team === undefined) return;
 
-    appStore.setTeam(team, side);
+    // appStore.setTeam(team, side);
+    if (side === TeamSideEnum.HOME) {
+      setTeamHome(team);
+    } else {
+      setTeamVisitor(team);
+    }
+
+    return;
   }
 
   async function handleSubmit() {
     let errorsUpdated = {
-      errorTeamHome: appStore.teamHome === null,
-      errorTeamVisitor: appStore.teamVisitor === null,
+      errorTeamHome: teamHome === null,
+      errorTeamVisitor: teamVisitor === null,
       errorSameTeam:
-        appStore.teamHome !== null &&
-        appStore.teamVisitor !== null &&
-        appStore.teamHome === appStore.teamVisitor,
+        teamHome !== null &&
+        teamVisitor !== null &&
+        teamHome === teamVisitor,
       errorPostRequest: false,
     };
 
@@ -82,9 +91,9 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
       errorsUpdated = {
         ...errorsUpdated,
         errorSameTeam:
-          appStore.teamHome !== null &&
-          appStore.teamVisitor !== null &&
-          appStore.teamHome === appStore.teamVisitor,
+          teamHome !== null &&
+          teamVisitor !== null &&
+          teamHome === teamVisitor,
       };
     }
 
@@ -96,22 +105,25 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
       const response = await fetch("http://127.0.0.1:8000/api/games", {
         method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          teamHome: appStore.teamHome!.id,
-          teamVisitor: appStore.teamVisitor!.id,
-        })
-      })
+          teamHome: teamHome!.id,
+          teamVisitor: teamVisitor!.id,
+        }),
+      });
 
       if (!response.ok) {
-        setErrors(prevErrors => ({...prevErrors, errorPostRequest: true}));
+        setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
 
         return;
       }
+
+      const responseDecoded = await response.json();
+      appStore.setGame(responseDecoded.data);
     } catch (e) {
-      setErrors(prevErrors => ({...prevErrors, errorPostRequest: true}));
+      setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
 
       return;
     }
@@ -140,7 +152,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
               }
               items={buildTeamOptions()}
               style={customPickerStyles}
-              value={appStore.teamHome !== null ? appStore.teamHome.id : null}
+              value={teamHome !== null ? teamHome.id : null}
             />
             {errors.errorTeamHome && (
               <ThemedText style={commonStyles.errorMessage}>
@@ -157,7 +169,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
               items={buildTeamOptions()}
               style={customPickerStyles}
               value={
-                appStore.teamVisitor !== null ? appStore.teamVisitor.id : null
+                teamVisitor !== null ? teamVisitor.id : null
               }
             />
             {errors.errorTeamVisitor && (
@@ -175,13 +187,13 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
             style={commonStyles.button}
             activeOpacity={0.9}
             onPress={handleSubmit}
-            >
+          >
             <Text style={commonStyles.buttonText}>Valider</Text>
           </TouchableOpacity>
           {errors.errorPostRequest && (
             <ThemedText style={commonStyles.errorMessage}>
-              Une erreur est survenue lors de la création du match. 
-              Veuillez réessayer ultérieurement.
+              Une erreur est survenue lors de la création du match. Veuillez
+              réessayer ultérieurement.
             </ThemedText>
           )}
         </ThemedView>

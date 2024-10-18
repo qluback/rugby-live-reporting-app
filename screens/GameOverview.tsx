@@ -132,7 +132,7 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
     <ThemedView style={styles.main}>
       <ThemedView style={styles.header}>
         <ThemedText style={styles.headerTeams}>
-          {appStore.teamHome?.name} vs {appStore.teamVisitor?.name}
+          {appStore.teamHome?.team.name} vs {appStore.teamVisitor?.team.name}
         </ThemedText>
         <ThemedText style={styles.headerScores}>
           {appStore.scoreHome} - {appStore.scoreVisitor}
