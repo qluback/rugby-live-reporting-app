@@ -4,7 +4,7 @@ export type StackParamList = {
   Home: undefined,
   NewGame: undefined,
   History: undefined,
-  GameOverview: undefined,
+  GameOverview: {id: number}|undefined,
   AddHighlight: undefined,
 }
 

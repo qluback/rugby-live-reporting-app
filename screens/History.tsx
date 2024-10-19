@@ -9,10 +9,8 @@ import { GameDto } from "../dto/GameDto";
 import { ThemedView } from "../components/ThemedView";
 import { SuccessResponseDto } from "../dto/SuccessResponseDto";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import useApplicationStore from "../stores/ApplicationStore";
 
 export default function History({ navigation }: HistoryScreenProps) {
-  const appStore = useApplicationStore();
   const [games, setGames] = useState<GameType[]>([]);
 
   async function getGames() {
@@ -57,22 +55,21 @@ export default function History({ navigation }: HistoryScreenProps) {
       }
     >
       <ThemedText>Matchs</ThemedText>
-      <TouchableOpacity
-        onPress={async () => {
-          const response = await fetch("http://127.0.0.1:8000/api/games/16");
-      const jsonResponse: SuccessResponseDto = await response.json();
-      appStore.setGame(jsonResponse.data);
-          navigation.navigate("GameOverview");
-        }}
-      >
-        <Text>Test</Text>
-      </TouchableOpacity>
       <ThemedView>
         {games.map((game) => (
-          <ThemedText key={game.id}>
-            {game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor}{" "}
-            {game.teamVisitor}
-          </ThemedText>
+          <ThemedView style={styles.historyRow}>
+            <ThemedText key={game.id}>
+              {game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor}{" "}
+              {game.teamVisitor}
+            </ThemedText>
+            <TouchableOpacity
+              onPress={async () => {
+                navigation.navigate("GameOverview", { id: game.id });
+              }}
+            >
+              <Text>Test</Text>
+            </TouchableOpacity>
+          </ThemedView>
         ))}
       </ThemedView>
     </ParallaxScrollView>
@@ -87,14 +84,9 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  formContainer: {
-    gap: 16,
-  },
-  formTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  form: {
-    gap: 16,
+  historyRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

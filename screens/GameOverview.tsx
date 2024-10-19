@@ -1,3 +1,4 @@
+import { SuccessResponseDto } from "../dto/SuccessResponseDto";
 import DisciplinaryHighlightItem from "../components/highlight/DisciplinaryHighlightItem";
 import ScoringHighlightItem from "../components/highlight/ScoringHighlightItem";
 import SubstitutionHighlightItem from "../components/highlight/SubstitutionHighlightItem";
@@ -9,7 +10,7 @@ import { isDisciplinaryHighlight } from "../types/highlight/DisciplinaryHighligh
 import { HighlightType } from "../types/highlight/HighlightType";
 import { isSubstitutionHighlight } from "../types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "../types/NavigationType";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -19,11 +20,30 @@ import {
   View,
 } from "react-native";
 
-export default function GameOverview({ navigation }: GameOverviewScreenProps) {
+export default function GameOverview({
+  route,
+  navigation,
+}: GameOverviewScreenProps) {
   const appStore = useApplicationStore();
   const [timerInterval, setTimerInterval] = useState<
     ReturnType<typeof setInterval> | undefined
   >();
+  console.log(route.params);
+
+  const getGame = useCallback(
+    async (gameId: number) => {
+      const response = await fetch("http://127.0.0.1:8000/api/games/" + gameId);
+      const jsonResponse: SuccessResponseDto = await response.json();
+      appStore.setGame(jsonResponse.data);
+    },
+    [appStore]
+  );
+
+  useEffect(() => {
+    if (route?.params?.id !== undefined) {
+      getGame(route.params.id);
+    }
+  }, [getGame, route?.params?.id]);
 
   const startTimer = () => {
     clearInterval(timerInterval);
@@ -70,40 +90,48 @@ export default function GameOverview({ navigation }: GameOverviewScreenProps) {
   }
 
   function handleEndHalfTime() {
-    Alert.alert("Fin de la mi-temps", "Êtes-vous sûr de vouloir clôturer la mi-temps ?", [
-      {
-        text: "Annuler",
-        style: "cancel",
-        onPress: () => {},
-      },
-      {
-        text: "Confirmer",
-        style: "destructive",
-        onPress: () => {
-          stopTimer();
-          appStore.endHalfTime();
+    Alert.alert(
+      "Fin de la mi-temps",
+      "Êtes-vous sûr de vouloir clôturer la mi-temps ?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel",
+          onPress: () => {},
         },
-      },
-    ]);
+        {
+          text: "Confirmer",
+          style: "destructive",
+          onPress: () => {
+            stopTimer();
+            appStore.endHalfTime();
+          },
+        },
+      ]
+    );
   }
 
   function handleEndGame() {
-    Alert.alert("Fin du match", "Êtes-vous sûr de vouloir clôturer le match ?", [
-      {
-        text: "Annuler",
-        style: "cancel",
-        onPress: () => {},
-      },
-      {
-        text: "Confirmer",
-        style: "destructive",
-        onPress: () => {
-          stopTimer();
-          appStore.endGame();
-          navigation.navigate("Home");
+    Alert.alert(
+      "Fin du match",
+      "Êtes-vous sûr de vouloir clôturer le match ?",
+      [
+        {
+          text: "Annuler",
+          style: "cancel",
+          onPress: () => {},
         },
-      },
-    ]);
+        {
+          text: "Confirmer",
+          style: "destructive",
+          onPress: () => {
+            stopTimer();
+            appStore.endGame();
+            navigation.navigate("Home");
+          },
+        },
+      ]
+    );
   }
 
   function handleQuitGame() {
