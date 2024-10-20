@@ -10,7 +10,7 @@ import { isDisciplinaryHighlight } from "../types/highlight/DisciplinaryHighligh
 import { HighlightType } from "../types/highlight/HighlightType";
 import { isSubstitutionHighlight } from "../types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "../types/NavigationType";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -30,20 +30,17 @@ export default function GameOverview({
   >();
   console.log(route.params);
 
-  const getGame = useCallback(
-    async (gameId: number) => {
-      const response = await fetch("http://127.0.0.1:8000/api/games/" + gameId);
-      const jsonResponse: SuccessResponseDto = await response.json();
-      appStore.setGame(jsonResponse.data);
-    },
-    [appStore]
-  );
-
   useEffect(() => {
     if (route?.params?.id !== undefined) {
       getGame(route.params.id);
     }
-  }, [getGame, route?.params?.id]);
+  }, []);
+
+  async function getGame(gameId: number) {
+    const response = await fetch("http://127.0.0.1:8000/api/games/" + gameId);
+    const jsonResponse: SuccessResponseDto = await response.json();
+    appStore.setGame(jsonResponse.data);
+  }
 
   const startTimer = () => {
     clearInterval(timerInterval);

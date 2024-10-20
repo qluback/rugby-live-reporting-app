@@ -123,14 +123,14 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
 
       const jsonResponse: SuccessResponseDto = await response.json();
       appStore.setGame(jsonResponse.data);
+
+      navigation.navigate("GameOverview", {id: jsonResponse.data.id});
     } catch (e) {
       console.error(e);
       setErrors((prevErrors) => ({ ...prevErrors, errorPostRequest: true }));
 
       return;
     }
-
-    navigation.navigate("GameOverview");
   }
 
   return (
