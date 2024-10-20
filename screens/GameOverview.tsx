@@ -28,7 +28,6 @@ export default function GameOverview({
   const [timerInterval, setTimerInterval] = useState<
     ReturnType<typeof setInterval> | undefined
   >();
-  console.log(route.params);
 
   useEffect(() => {
     if (route?.params?.id !== undefined) {

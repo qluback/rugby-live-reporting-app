@@ -35,14 +35,14 @@ export default function ScoringHighlightForm({
   const radioButtons: OptionTeamProps[] = useMemo(
     () => [
       {
-        id: "1", // acts as primary key, should be unique and non-empty string
+        id: appStore.teamHome!.id.toString(), // acts as primary key, should be unique and non-empty string
         label: appStore.teamHome!.team.name,
         value: TeamSideEnum.HOME,
         color: "#002A61",
         labelStyle: { color: "#002A61" },
       },
       {
-        id: "2",
+        id: appStore.teamVisitor!.id.toString(),
         label: appStore.teamVisitor!.team.name,
         value: TeamSideEnum.VISITOR,
         color: "#002A61",
@@ -123,7 +123,10 @@ export default function ScoringHighlightForm({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          teamCompetingId: 32,
+          teamCompetingId:
+            team!.value === TeamSideEnum.HOME
+              ? appStore?.teamHome?.id
+              : appStore?.teamVisitor?.id,
           type: scoringHighlightData!.id,
           minute: highlightMinute,
         }),

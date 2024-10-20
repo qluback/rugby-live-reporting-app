@@ -21,7 +21,7 @@ type Store = {
   setGame: (game: any) => void;
   resetStore: () => void;
   setTeam: (team: TeamCompetingType, side: TeamSideEnum) => void;
-  addScoringHighlight: (highlight: ScoringHighlightType, team: string) => void;
+  addScoringHighlight: (highlight: ScoringHighlightType, teamSide: string) => void;
   addPlayerHighlight: (
     highlight: DisciplinaryHighlightType | SubstitutionHighlightType,
     team: string

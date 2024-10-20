@@ -31,7 +31,6 @@ export default function History({ navigation }: HistoryScreenProps) {
       });
       setGames(transformedGames);
     } catch (e) {
-      console.log(e);
       setGames([]);
     }
   }
