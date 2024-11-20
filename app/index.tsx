@@ -4,9 +4,13 @@ import { StackParamList } from "../types/NavigationType";
 import { createStackNavigator } from "@react-navigation/stack";
 import "../assets/js/gesture-handler";
 import HomeTabs from "../screens/HomeTabs";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { ThemedText } from "../components/ThemedText";
+import { useNavigation } from "expo-router";
 
 export default function App() {
   const Stack = createStackNavigator<StackParamList>();
+  const navigation = useNavigation();
 
   return (
     <Stack.Navigator>
@@ -20,7 +24,8 @@ export default function App() {
         component={GameOverview}
         options={{
           title: "Rapport de match",
-          headerLeft: ()=> null,
+          headerLeft: () => null,
+          // headerLeft: () => <TouchableOpacity onPress={() => navigation.goBack()}><ThemedText>test</ThemedText></TouchableOpacity>,
           // headerBackTitle: "Retour",
           // headerTintColor: "#002A61",
         }}

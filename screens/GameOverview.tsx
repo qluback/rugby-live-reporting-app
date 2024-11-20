@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Game } from "../constants/Game";
 
 export default function GameOverview({
   route,
@@ -98,9 +99,13 @@ export default function GameOverview({
         {
           text: "Confirmer",
           style: "destructive",
-          onPress: () => {
+          onPress: async () => {
             stopTimer();
             appStore.endHalfTime();
+            await sendUpdateGameRequest({
+              time: Game.durationHalfTimeInSeconds,
+              halfTime: 2,
+            });
           },
         },
       ]
@@ -120,10 +125,13 @@ export default function GameOverview({
         {
           text: "Confirmer",
           style: "destructive",
-          onPress: () => {
+          onPress: async () => {
             stopTimer();
             appStore.endGame();
-            navigation.navigate("Home");
+            await sendUpdateGameRequest({
+              time: Game.durationSeconds,
+              halfTime: 2,
+            });
           },
         },
       ]
@@ -140,13 +148,45 @@ export default function GameOverview({
       {
         text: "Quitter",
         style: "destructive",
-        onPress: () => {
+        onPress: async () => {
           stopTimer();
           appStore.resetStore();
+          await sendUpdateGameRequest({
+            time: appStore.timerSeconds,
+          });
           navigation.navigate("Home");
         },
       },
     ]);
+  }
+
+  async function sendUpdateGameRequest(params: any) {
+    try {
+      if (route?.params?.id === undefined) {
+        throw new Error("Unable to update game : ID not found");
+      }
+
+      console.log(params);
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/games/${route.params.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(params),
+        }
+      );
+
+      if (!response.ok) {
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      return;
+    }
   }
 
   return (

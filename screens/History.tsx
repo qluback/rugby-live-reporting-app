@@ -57,7 +57,7 @@ export default function History({ navigation }: HistoryScreenProps) {
       <ThemedView>
         {games.map((game) => (
           <ThemedView style={styles.historyRow}>
-            <ThemedText key={game.id}>
+            <ThemedText key={game.id+game.teamHome+game.teamVisitor}>
               {game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor}{" "}
               {game.teamVisitor}
             </ThemedText>

@@ -18,10 +18,14 @@ type Store = {
   timerSeconds: number;
   timerOn: boolean;
   halfTime: number;
+  
   setGame: (game: any) => void;
   resetStore: () => void;
   setTeam: (team: TeamCompetingType, side: TeamSideEnum) => void;
-  addScoringHighlight: (highlight: ScoringHighlightType, teamSide: string) => void;
+  addScoringHighlight: (
+    highlight: ScoringHighlightType,
+    teamSide: string
+  ) => void;
   addPlayerHighlight: (
     highlight: DisciplinaryHighlightType | SubstitutionHighlightType,
     team: string
@@ -55,7 +59,11 @@ const useApplicationStore = create<Store>((set, get) => ({
         scoreHome: game.scoreHome,
         scoreVisitor: game.scoreVisitor,
         highlightsHome: formatHighlights(game.teamCompetingHome.highlights),
-        highlightsVisitor: formatHighlights(game.teamCompetingVisitor.highlights),
+        highlightsVisitor: formatHighlights(
+          game.teamCompetingVisitor.highlights
+        ),
+        timerSeconds: game.time,
+        halfTime: game.halfTime,
       };
     }),
   resetStore: () => set({ ...initialState }),
@@ -117,9 +125,7 @@ const useApplicationStore = create<Store>((set, get) => ({
   },
   endHalfTime: () =>
     set({ timerSeconds: Game.durationHalfTimeInSeconds, halfTime: 2 }),
-  endGame: () => {
-    get().resetStore();
-  },
+  endGame: () => set({ timerSeconds: Game.durationSeconds, halfTime: 2 }),
 }));
 
 function compare(a: HighlightType, b: HighlightType) {

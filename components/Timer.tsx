@@ -3,6 +3,7 @@ import { ThemedView } from "./ThemedView";
 import useApplicationStore from "../stores/ApplicationStore";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { commonStyles } from "../styles/commonStyles";
+import { Game } from "../constants/Game";
 
 interface Props {
   onStartTimer: () => void;
@@ -35,7 +36,10 @@ export default function Timer({
   }
 
   function isStartOfSecondHalfTime(): boolean {
-    return appStore.halfTime === 2 && appStore.timerSeconds === 2400;
+    return (
+      appStore.halfTime === 2 &&
+      appStore.timerSeconds === Game.durationHalfTimeInSeconds
+    );
   }
 
   function renderStopGameButton() {
