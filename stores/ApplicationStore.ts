@@ -18,7 +18,8 @@ type Store = {
   timerSeconds: number;
   timerOn: boolean;
   halfTime: number;
-  
+  status: number;
+
   setGame: (game: any) => void;
   resetStore: () => void;
   setTeam: (team: TeamCompetingType, side: TeamSideEnum) => void;
@@ -47,6 +48,7 @@ const initialState = {
   timerSeconds: 0,
   timerOn: false,
   halfTime: 1,
+  status: 0,
 };
 
 const useApplicationStore = create<Store>((set, get) => ({
@@ -64,6 +66,7 @@ const useApplicationStore = create<Store>((set, get) => ({
         ),
         timerSeconds: game.time,
         halfTime: game.halfTime,
+        status: game.status,
       };
     }),
   resetStore: () => set({ ...initialState }),
@@ -119,13 +122,18 @@ const useApplicationStore = create<Store>((set, get) => ({
     }),
   setTimerSeconds: () =>
     set((state) => ({ timerSeconds: state.timerSeconds + 1 })),
-  setTimerOn: (status: boolean) => set({ timerOn: status }),
+  setTimerOn: (timerIsOn: boolean) =>
+    set((state) => ({
+      timerOn: timerIsOn,
+      status: timerIsOn ? 1 : state.status,
+    })),
   getCurrentTimerMinute: (): number => {
     return Math.floor(get().timerSeconds / 60) + 1;
   },
   endHalfTime: () =>
     set({ timerSeconds: Game.durationHalfTimeInSeconds, halfTime: 2 }),
-  endGame: () => set({ timerSeconds: Game.durationSeconds, halfTime: 2 }),
+  endGame: () =>
+    set({ timerSeconds: Game.durationSeconds, halfTime: 2, status: 2 }),
 }));
 
 function compare(a: HighlightType, b: HighlightType) {

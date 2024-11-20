@@ -45,7 +45,11 @@ export default function Timer({
   function renderStopGameButton() {
     if (
       !appStore.timerOn &&
-      (isStartOfFirstHalfTime() || isStartOfSecondHalfTime())
+      (
+        isStartOfFirstHalfTime() ||
+        isStartOfSecondHalfTime() ||
+        appStore.status === 2
+      )
     ) {
       return (
         <TouchableOpacity
@@ -78,20 +82,22 @@ export default function Timer({
       </ThemedText>
       <ThemedView style={styles.actions}>
         {renderStopGameButton()}
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={appStore.timerOn ? onStopTimer : onStartTimer}
-          style={[
-            commonStyles.button,
-            appStore.timerOn
-              ? { backgroundColor: "lightgreen" }
-              : { backgroundColor: "green" },
-          ]}
-        >
-          <ThemedText style={commonStyles.buttonText}>
-            {appStore.timerOn ? "Pause" : "Démarrer"}
-          </ThemedText>
-        </TouchableOpacity>
+        {appStore.status !== 2 && (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={appStore.timerOn ? onStopTimer : onStartTimer}
+            style={[
+              commonStyles.button,
+              appStore.timerOn
+                ? { backgroundColor: "lightgreen" }
+                : { backgroundColor: "green" },
+            ]}
+          >
+            <ThemedText style={commonStyles.buttonText}>
+              {appStore.timerOn ? "Pause" : "Démarrer"}
+            </ThemedText>
+          </TouchableOpacity>
+        )}
       </ThemedView>
     </ThemedView>
   );

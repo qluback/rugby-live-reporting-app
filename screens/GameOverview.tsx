@@ -105,6 +105,7 @@ export default function GameOverview({
             await sendUpdateGameRequest({
               time: Game.durationHalfTimeInSeconds,
               halfTime: 2,
+              status: appStore.status,
             });
           },
         },
@@ -131,6 +132,7 @@ export default function GameOverview({
             await sendUpdateGameRequest({
               time: Game.durationSeconds,
               halfTime: 2,
+              status: 2,
             });
           },
         },
@@ -150,9 +152,10 @@ export default function GameOverview({
         style: "destructive",
         onPress: async () => {
           stopTimer();
-          appStore.resetStore();
+          // appStore.resetStore();
           await sendUpdateGameRequest({
             time: appStore.timerSeconds,
+            status: appStore.status,
           });
           navigation.navigate("Home");
         },
