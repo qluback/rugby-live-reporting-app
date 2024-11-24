@@ -144,7 +144,7 @@ export default function NewGame({ navigation }: NewGameScreenProps) {
       }
     >
       <ThemedView style={styles.formContainer}>
-        <ThemedText style={styles.formTitle}>Équipes</ThemedText>
+        <ThemedText type="subtitle">Équipes</ThemedText>
         <ThemedView style={styles.form}>
           <ThemedView>
             <RNPickerSelect
@@ -214,10 +214,6 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     gap: 16,
-  },
-  formTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
   },
   form: {
     gap: 16,

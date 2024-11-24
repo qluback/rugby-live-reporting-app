@@ -6,7 +6,7 @@ export enum ScoringHighlightEnum {
   DROP_GOAL = "dropGoal",
 }
 
-export function isScoringHighlight(
+export function isScoringHighlightId(
   value: string
 ): value is ScoringHighlightEnum {
   return Object.values(ScoringHighlightEnum).includes(

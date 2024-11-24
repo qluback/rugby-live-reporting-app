@@ -6,9 +6,9 @@ React Native, Typescript
 
 ## TO DO
 - Database
-  - [ ] Team : name
+  - [x] Team : name
   - [x] Game : teamHome, teamVisitor, scoreHome, scoreVisitor, highlightsHome, highlightsVisitor
-  - [ ] Highlight : gameId, teamId, type (try, penalty kick, substition...), time
+  - [x] Highlight : gameId, teamId, type (try, penalty kick, substition...), time
 - Configuration Game Screen: configure the rugby match
   - [x] Form to select home and visitor teams
   - [x] Button to submit form and open "Game Overview Screen"
@@ -54,8 +54,8 @@ React Native, Typescript
 - History Screen
   - [x] Display list of past games
   - [x] GET all games
-    - [ ] Handle error on GET all games
-  - [ ] On click row past game, redirect to GameOverview screen with all data from game
-    - [ ] Navigate to GameOverview with game ID in route params
+    - [x] Handle error on GET all games
+  - [x] On click row past game, redirect to GameOverview screen with all data from game
+    - [x] Navigate to GameOverview with game ID in route params
     - [x] GET game by id
       - [ ] Handle error GET game by id

@@ -6,9 +6,7 @@ import { ThemedText } from "../components/ThemedText";
 import { ThemedView } from "../components/ThemedView";
 import Timer from "../components/Timer";
 import useApplicationStore from "../stores/ApplicationStore";
-import { isDisciplinaryHighlight } from "../types/highlight/DisciplinaryHighlightType";
 import { HighlightType } from "../types/highlight/HighlightType";
-import { isSubstitutionHighlight } from "../types/highlight/SubstitutionHighlightType";
 import { GameOverviewScreenProps } from "../types/NavigationType";
 import { useEffect, useState } from "react";
 import {
@@ -20,6 +18,8 @@ import {
   View,
 } from "react-native";
 import { Game } from "../constants/Game";
+import { isDisciplinaryHighlight } from "../types/highlight/DisciplinaryHighlightType";
+import { isSubstitutionHighlight } from "../types/highlight/SubstitutionHighlightType";
 
 export default function GameOverview({
   route,
@@ -169,8 +169,6 @@ export default function GameOverview({
         throw new Error("Unable to update game : ID not found");
       }
 
-      console.log(params);
-
       const response = await fetch(
         `http://127.0.0.1:8000/api/games/${route.params.id}`,
         {
@@ -214,13 +212,15 @@ export default function GameOverview({
         <View style={styles.verticalLine}></View>
         {renderHighlightList(appStore.highlightsVisitor)}
       </ThemedView>
-      <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.9}
-        onPress={() => navigation.navigate("AddHighlight")}
-      >
-        <Text style={styles.buttonText}>Ajouter un temps-fort</Text>
-      </TouchableOpacity>
+      {appStore.status === 1 && (
+        <TouchableOpacity
+          style={styles.button}
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate("AddHighlight")}
+        >
+          <Text style={styles.buttonText}>Ajouter un temps-fort</Text>
+        </TouchableOpacity>
+      )}
     </ThemedView>
   );
 }

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import ParallaxScrollView from "../components/ParallaxScrollView";
 import { ThemedText } from "../components/ThemedText";
 import { Colors } from "../constants/Colors";
@@ -9,9 +9,12 @@ import { GameDto } from "../dto/GameDto";
 import { ThemedView } from "../components/ThemedView";
 import { SuccessResponseDto } from "../dto/SuccessResponseDto";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import SearchIcon from "../components/icons/SearchIcon";
+import ErrorMessage from "../components/form/ErrorMessage";
 
 export default function History({ navigation }: HistoryScreenProps) {
   const [games, setGames] = useState<GameType[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   async function getGames() {
     try {
@@ -30,8 +33,11 @@ export default function History({ navigation }: HistoryScreenProps) {
         transformedGames.push(transformedGame);
       });
       setGames(transformedGames);
+      setError(null);
     } catch (e) {
+      console.error(e);
       setGames([]);
+      setError("Une erreur est survenue lors de la récupération des matchs.");
     }
   }
 
@@ -53,29 +59,37 @@ export default function History({ navigation }: HistoryScreenProps) {
         />
       }
     >
-      <ThemedText>Matchs</ThemedText>
-      <ThemedView>
-        {games.map((game) => (
-          <ThemedView style={styles.historyRow}>
-            <ThemedText key={game.id}>
-              {game.id} / {game.teamHome} {game.scoreHome} - {game.scoreVisitor}{" "}
-              {game.teamVisitor}
-            </ThemedText>
-            <TouchableOpacity
-              onPress={async () => {
-                navigation.navigate("GameOverview", { id: game.id });
-              }}
-            >
-              <Text>Test</Text>
-            </TouchableOpacity>
-          </ThemedView>
-        ))}
-      </ThemedView>
+      <ThemedText type="subtitle">Matchs</ThemedText>
+      {error === null ? (
+        <ThemedView>
+          {games.map((game) => (
+            <ThemedView key={game.id} style={styles.historyRow}>
+              <ThemedText>
+                {game.id} / {game.teamHome} {game.scoreHome} -{" "}
+                {game.scoreVisitor} {game.teamVisitor}
+              </ThemedText>
+              <TouchableOpacity
+                onPress={async () => {
+                  navigation.navigate("GameOverview", { id: game.id });
+                }}
+              >
+                <SearchIcon />
+              </TouchableOpacity>
+            </ThemedView>
+          ))}
+        </ThemedView>
+      ) : (
+        <ErrorMessage>{error}</ErrorMessage>
+      )}
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+  },
   logo: {
     height: "100%",
     width: "100%",
@@ -87,5 +101,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    marginVertical: 4,
   },
 });

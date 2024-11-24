@@ -60,10 +60,12 @@ const useApplicationStore = create<Store>((set, get) => ({
         teamVisitor: game.teamCompetingVisitor,
         scoreHome: game.scoreHome,
         scoreVisitor: game.scoreVisitor,
-        highlightsHome: formatHighlights(game.teamCompetingHome.highlights),
+        highlightsHome: formatHighlights(
+          game.teamCompetingHome.highlights
+        ).sort(compare),
         highlightsVisitor: formatHighlights(
           game.teamCompetingVisitor.highlights
-        ),
+        ).sort(compare),
         timerSeconds: game.time,
         halfTime: game.halfTime,
         status: game.status,
@@ -125,7 +127,7 @@ const useApplicationStore = create<Store>((set, get) => ({
   setTimerOn: (timerIsOn: boolean) =>
     set((state) => ({
       timerOn: timerIsOn,
-      status: timerIsOn ? 1 : state.status,
+      status: timerIsOn ? Game.status.inProgress : state.status,
     })),
   getCurrentTimerMinute: (): number => {
     return Math.floor(get().timerSeconds / 60) + 1;

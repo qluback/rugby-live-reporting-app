@@ -4,13 +4,9 @@ import { StackParamList } from "../types/NavigationType";
 import { createStackNavigator } from "@react-navigation/stack";
 import "../assets/js/gesture-handler";
 import HomeTabs from "../screens/HomeTabs";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { ThemedText } from "../components/ThemedText";
-import { useNavigation } from "expo-router";
 
 export default function App() {
   const Stack = createStackNavigator<StackParamList>();
-  const navigation = useNavigation();
 
   return (
     <Stack.Navigator>

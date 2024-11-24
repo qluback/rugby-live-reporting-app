@@ -11,7 +11,7 @@ export default function DisciplinaryHighlightItem({ highlight }: Props) {
   return (
     <ThemedView style={highlightStyles.highlightItem}>
       <ThemedText>
-        {highlight.label} - {highlight.player}
+        {highlight.label} - {highlight.playerSanctioned}
       </ThemedText>
       <ThemedText>{highlight.minute}'</ThemedText>
     </ThemedView>

@@ -45,11 +45,9 @@ export default function Timer({
   function renderStopGameButton() {
     if (
       !appStore.timerOn &&
-      (
-        isStartOfFirstHalfTime() ||
+      (isStartOfFirstHalfTime() ||
         isStartOfSecondHalfTime() ||
-        appStore.status === 2
-      )
+        appStore.status === Game.status.finished)
     ) {
       return (
         <TouchableOpacity
@@ -77,12 +75,19 @@ export default function Timer({
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.text}>
-        {appStore.halfTime === 1 ? "1ère" : "2ème"} MT : {formatTimer()}
-      </ThemedText>
+      {appStore.status === 2 ? (
+        <ThemedText style={styles.text}>
+          Match terminé
+        </ThemedText>
+      ) : (
+        <ThemedText style={styles.text}>
+          {appStore.halfTime === 1 ? "1ère" : "2ème"} MT : {formatTimer()}
+        </ThemedText>
+      )}
+
       <ThemedView style={styles.actions}>
         {renderStopGameButton()}
-        {appStore.status !== 2 && (
+        {appStore.status !== Game.status.finished && (
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={appStore.timerOn ? onStopTimer : onStartTimer}

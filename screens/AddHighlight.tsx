@@ -7,7 +7,7 @@ export default function AddHighlight({ navigation }: AddHighlightScreenProps) {
   const Tab = createMaterialTopTabNavigator();
 
   function handleSubmitForm() {
-    navigation.navigate("GameOverview");
+    navigation.goBack();
   }
 
   return (
