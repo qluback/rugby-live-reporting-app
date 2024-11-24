@@ -1,9 +1,9 @@
-import AddHighlight from "../screens/AddHighlight";
-import GameOverview from "../screens/GameOverview";
-import { StackParamList } from "../types/NavigationType";
+import AddHighlight from "../src/screens/AddHighlight";
+import GameOverview from "../src/screens/GameOverview";
+import { StackParamList } from "../src/types/NavigationType";
 import { createStackNavigator } from "@react-navigation/stack";
 import "../assets/js/gesture-handler";
-import HomeTabs from "../screens/HomeTabs";
+import HomeTabs from "../src/screens/HomeTabs";
 
 export default function App() {
   const Stack = createStackNavigator<StackParamList>();
