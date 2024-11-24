@@ -11,7 +11,6 @@ import { GameOverviewScreenProps } from "../types/NavigationType";
 import { useEffect, useState } from "react";
 import {
   Alert,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,6 +19,7 @@ import {
 import { Game } from "../constants/Game";
 import { isDisciplinaryHighlight } from "../types/highlight/DisciplinaryHighlightType";
 import { isSubstitutionHighlight } from "../types/highlight/SubstitutionHighlightType";
+import { FlatList } from "react-native-gesture-handler";
 
 export default function GameOverview({
   route,
@@ -59,31 +59,24 @@ export default function GameOverview({
 
   function renderHighlightList(highlights: HighlightType[]) {
     return (
-      <ScrollView style={styles.highlightsList}>
-        {highlights.map((highlight: HighlightType, index) => {
-          if (isDisciplinaryHighlight(highlight)) {
-            return (
-              <DisciplinaryHighlightItem
-                key={"home" + index}
-                highlight={highlight}
-              />
-            );
-          }
-          if (isSubstitutionHighlight(highlight)) {
-            return (
-              <SubstitutionHighlightItem
-                key={"home" + index}
-                highlight={highlight}
-              />
-            );
-          }
-
-          return (
-            <ScoringHighlightItem key={"home" + index} highlight={highlight} />
-          );
-        })}
-      </ScrollView>
+      <FlatList
+        data={highlights}
+        renderItem={({ item }) => renderHighlightItem(item)}
+        keyExtractor={(item, index) => index.toString()}
+        style={styles.highlightsList}
+      />
     );
+  }
+
+  function renderHighlightItem(highlight: HighlightType) {
+    if (isDisciplinaryHighlight(highlight)) {
+      return <DisciplinaryHighlightItem highlight={highlight} />;
+    }
+    if (isSubstitutionHighlight(highlight)) {
+      return <SubstitutionHighlightItem highlight={highlight} />;
+    }
+
+    return <ScoringHighlightItem highlight={highlight} />;
   }
 
   function handleEndHalfTime() {
